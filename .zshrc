@@ -11,7 +11,10 @@ setopt numericglobsort     # sort filenames numerically when it makes sense
 setopt promptsubst         # enable command substitution in prompt
 
 WORDCHARS=${WORDCHARS//\/} # Don't consider certain characters part of the word
-
+# Go path
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
 # hide EOL sign ('%')
 PROMPT_EOL_MARK=""
 

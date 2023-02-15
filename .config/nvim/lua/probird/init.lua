@@ -1,2 +1,3 @@
 require("probird.remap")
-print("hello from probird5")
+require("probird.set")
+
