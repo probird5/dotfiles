@@ -65,7 +65,8 @@ bindsym $mod+Shift+x kill
 # start rofi
 bindsym $mod+space exec --no-startup-id rofi -show combi -dpi 144 -run-command "i3-msg exec '{cmd}'" -show-icons
 
-
+# Picom
+exec_always --no-startup-id picom -b
 
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
@@ -200,11 +201,31 @@ bindsym $mod+r mode "resize"
 #}
 
 # keybinding to lock screen
-bindsym $mod+l exec "i3lock -c 000000"
+bindsym $mod+l exec betterlockscreen -l
 
 # auto lock the screen
-exec "xautolock -detectsleep -time 3 -locker \"i3lock -c 000000\""
+#iexec "xautolock -detectsleep -time 5 -locker \"betterlockscreen -l\""
+exec --no-startup-id xautolock -time 5 -locker 'betterlockscreen -l'
 
 # Polybar execution
 
 exec_always ~/.config/polybar/launch.sh &
+
+# Resize windows
+bindsym $mod+Control+Right resize shrink width 10 px or 10 ppt
+bindsym $mod+Control+Down resize grow height 10 px or 10 ppt
+bindsym $mod+Control+Up resize shrink height 10 px or 10 ppt
+bindsym $mod+Control+Left resize grow width 10 px or 10 ppt
+
+## Screenshots
+#bindsym Print exec --no-startup-id maim "/home/$USER/Pictures/$(date)"
+bindsym $mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) "/home/$USER/Pictures/$(date)"
+#bindsym Shift+Print exec --no-startup-id maim --select "/home/$USER/Pictures/$(date)"
+bindsym Print exec --no-startup-id sh -c 'filepath="/home/$USER/Pictures/$(date +'%Y%m%d%H%M%S').png" && maim --select "$filepath" && xclip -selection clipboard -t image/png -i "$filepath"'
+
+
+
+## Clipboard Screenshots
+bindsym Ctrl+Print exec --no-startup-id maim | xclip -selection clipboard -t image/png
+bindsym Ctrl+$mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+bindsym Ctrl+Shift+Print exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
