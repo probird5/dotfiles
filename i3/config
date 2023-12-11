@@ -54,7 +54,7 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec kitty 
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+x kill
@@ -205,7 +205,7 @@ bindsym $mod+l exec betterlockscreen -l
 
 # auto lock the screen
 #iexec "xautolock -detectsleep -time 5 -locker \"betterlockscreen -l\""
-exec --no-startup-id xautolock -time 5 -locker 'betterlockscreen -l'
+#exec --no-startup-id xautolock -time 5 -locker 'betterlockscreen -l'
 
 # Polybar execution
 
@@ -230,10 +230,5 @@ bindsym Ctrl+Print exec --no-startup-id maim | xclip -selection clipboard -t ima
 bindsym Ctrl+$mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
 bindsym Ctrl+Shift+Print exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
 
-## Trying this for download shit going off screen
-floating_minimum_size 75 x 50
-floating_maximum_size 1000 x 1000
-
-
-# Fix desktop resolution
-#exec_always ~/.screenlayout/screen_layout.sh &
+## No border alacritty
+for_window [class="Alacritty"] border none
