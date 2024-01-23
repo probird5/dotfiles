@@ -17,6 +17,8 @@ return {
 					"clangd",
 					"marksman",
 					"jedi_language_server",
+          "htmx",
+          "html",
 				},
 			})
 		end,
@@ -37,6 +39,12 @@ return {
 				capabilities = capabilities,
 			})
 			lspconfig.gopls.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.htmx.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.html.setup({
 				capabilities = capabilities,
 			})
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
