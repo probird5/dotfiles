@@ -23,6 +23,10 @@ font pango:monospace 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
+# Set my main display on my desktop
+workspace 1 output DP-2
+workspace 2 output HDMI-0
+
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
@@ -232,3 +236,7 @@ bindsym Ctrl+Shift+Print exec --no-startup-id maim --select | xclip -selection c
 
 ## No border alacritty
 for_window [class="Alacritty"] border none
+for_window [class="Firefox"] border none
+
+
+
