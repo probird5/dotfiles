@@ -25,7 +25,7 @@ exec --no-startup-id dex --autostart --environment i3
 
 # Set my main display on my desktop
 workspace 1 output DP-2
-workspace 2 output HDMI-0
+workspace 4 output HDMI-0
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -221,22 +221,14 @@ bindsym $mod+Control+Down resize grow height 10 px or 10 ppt
 bindsym $mod+Control+Up resize shrink height 10 px or 10 ppt
 bindsym $mod+Control+Left resize grow width 10 px or 10 ppt
 
-## Screenshots
-#bindsym Print exec --no-startup-id maim "/home/$USER/Pictures/$(date)"
-bindsym $mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) "/home/$USER/Pictures/$(date)"
-#bindsym Shift+Print exec --no-startup-id maim --select "/home/$USER/Pictures/$(date)"
-bindsym Print exec --no-startup-id sh -c 'filepath="/home/$USER/Pictures/$(date +'%Y%m%d%H%M%S').png" && maim --select "$filepath" && xclip -selection clipboard -t image/png -i "$filepath"'
+## Screenshot
 
-
-
-## Clipboard Screenshots
-bindsym Ctrl+Print exec --no-startup-id maim | xclip -selection clipboard -t image/png
-bindsym Ctrl+$mod+Print exec --no-startup-id maim --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
-bindsym Ctrl+Shift+Print exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
+bindsym $mod+Print exec --no-startup-id flameshot gui
 
 ## No border alacritty
 for_window [class="Alacritty"] border none
 for_window [class="Firefox"] border none
 
-
-
+## Added copyq fir testing 
+#exec --no-startup-id copyq
+#bindsym $mod+Shift+v exec --no-startup-id "copyq show; copyq select 0"
