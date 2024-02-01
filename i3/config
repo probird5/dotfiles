@@ -23,10 +23,15 @@ font pango:monospace 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
+# Spotify daemons
+exec --no-startup-id spotifyd --no-daemon > ~/.spotifyd.log 2>&1
+
 # Set my main display on my desktop
 workspace 1 output DP-2
+workspace 2 output DP-2
+workspace 3 output DP-2
 workspace 4 output HDMI-0
-
+workspace 5 output HDMI-0
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
@@ -213,7 +218,7 @@ bindsym $mod+l exec betterlockscreen -l
 
 # Polybar execution
 
-exec_always ~/.config/polybar/launch.sh &
+exec_always ~/.config/polybar/launch.sh --docky &
 
 # Resize windows
 bindsym $mod+Control+Right resize shrink width 10 px or 10 ppt
@@ -223,7 +228,7 @@ bindsym $mod+Control+Left resize grow width 10 px or 10 ppt
 
 ## Screenshot
 
-bindsym $mod+Print exec --no-startup-id flameshot gui
+bindsym Print exec --no-startup-id flameshot gui
 
 ## No border alacritty
 for_window [class="Alacritty"] border none
