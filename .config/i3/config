@@ -29,7 +29,7 @@ exec --no-startup-id spotifyd --no-daemon > ~/.spotifyd.log 2>&1
 # Set my main display on my desktop
 workspace 1 output DP-2
 workspace 2 output DP-2
-workspace 3 output DP-2
+workspace 3 output DP-2:
 workspace 4 output HDMI-0
 workspace 5 output HDMI-0
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
@@ -38,6 +38,7 @@ workspace 5 output HDMI-0
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+#exec --no-startup-id xss-lock -- betterlockscreen -l
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
