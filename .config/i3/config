@@ -3,11 +3,12 @@
 #
 # Should you change your keyboard layout some time, delete
 # this file and re-run i3-config-wizard(1).
-#
+#test
 
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
 
 set $mod Mod4
 
@@ -29,9 +30,10 @@ exec --no-startup-id spotifyd --no-daemon > ~/.spotifyd.log 2>&1
 # Set my main display on my desktop
 workspace 1 output DP-2
 workspace 2 output DP-2
-workspace 3 output DP-2:
+workspace 3 output DP-2
 workspace 4 output HDMI-0
 workspace 5 output HDMI-0
+workspace 6 output HDMI-0
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
@@ -83,11 +85,12 @@ exec_always --no-startup-id picom -b
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
+#bindsym $mod+h focus left
+#bindsym $mod+j focus down
+#bindsym $mod+k focus up
+#bindsym $mod+l focus right
 # using this for lock but maybe should set something else if I want to use motions
 #bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -236,5 +239,9 @@ for_window [class="Alacritty"] border none
 for_window [class="Firefox"] border none
 
 ## Added copyq fir testing 
-#exec --no-startup-id copyq
+#exec --no-startup-id copy
 #bindsym $mod+Shift+v exec --no-startup-id "copyq show; copyq select 0"
+
+## Execute workspace script
+
+bindsym $mod+grave exec --no-startup-id ~/Script/switch_workspace.sh
