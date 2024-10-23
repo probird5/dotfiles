@@ -6,7 +6,9 @@ if ! pgrep -x "swww-daemon" > /dev/null; then
     swww-daemon
 fi
 
+sleep 3
+
 RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 
 # Set a random wallpaper from the directory using swww
-swww img "$RANDOM_WALLPAPER" --transition-type wipe --transition-angle 30 --transition-step 255 --transition-fps 120 --transition-duration 3
+swww img "$RANDOM_WALLPAPER" --transition-type wipe --transition-angle 30 --transition-fps 255 --transition-duration 2
