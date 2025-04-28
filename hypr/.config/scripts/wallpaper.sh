@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Directory containing your wallpapers
-WALLPAPER_DIR="$HOME/Documents/dotfiles/backgrounds"
+WALLPAPER_DIR="$HOME/dotfiles/backgrounds"
 
 if ! pgrep -x "swww-daemon" > /dev/null; then
     swww-daemon
