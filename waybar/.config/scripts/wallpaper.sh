@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Directory containing your wallpapers
-WALLPAPER_DIR="$HOME/config/dotfiles/backgrounds"
+WALLPAPER_DIR="$HOME/Documents/dotfiles/backgrounds"
 
 RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 
