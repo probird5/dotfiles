@@ -13,6 +13,7 @@
 # Starship configuration
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+source <(fzf --zsh)
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -108,7 +109,7 @@ export PATH="$HOME/Applications:$PATH"
 
 # Go paths
 export PATH=$PATH:/usr/local/go/bin
-export GOROOT=/usr/local/go
+export GOROOT=/usr/lib/go
 export PATH=$PATH:~/go/bin
 
 # From kali

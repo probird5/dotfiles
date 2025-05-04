@@ -1,0 +1,8 @@
+background-opacity = 0.85
+resize-overlay = never
+confirm-close-surface = false
+theme = tokyonight
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+link-url = true
