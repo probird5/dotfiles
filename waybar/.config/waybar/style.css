@@ -24,9 +24,11 @@ window#waybar {
     background: #64727D;
     border-bottom: 3px solid white;
 }
+/*
  #clock, #battery {
     padding:  5px;
 }
+*/
 
 #mode {
     background: #64727D;
@@ -35,11 +37,17 @@ window#waybar {
 
 #clock {
     background-color: transparent;
+
 }
 
 #battery {
     background-color: transparent;
     color: white;
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    padding-right: 10px;
+    padding-left: 10px;
+
 }
 
 #battery.charging {
@@ -62,4 +70,10 @@ window#waybar {
     animation-timing-function: steps(12);
     animation-iteration-count: infinite;
     animation-direction: alternate;
+}
+.modules-right > .module:not(:first-child) {   /* skip the very first one */
+    border-left: 1px solid white;             /* ← the white line        */
+    padding-left: 8px;                        /* breathing room           */
+    padding-right: 8px;
+    margin: 0;                                /* ensure line touches edges */
 }
