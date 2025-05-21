@@ -22,23 +22,6 @@
         "battery",
         "clock",
     ],
-    // Modules configuration
-    // "sway/workspaces": {
-    //     "disable-scroll": true,
-    //     "all-outputs": true,
-    //     "warp-on-scroll": false,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    // },
     "tray": {
         // "icon-size": 21,
         "spacing": 10,
@@ -52,10 +35,11 @@
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}"
     },
-    "cpu": {
-        "format": "{usage}%  ",
-        "tooltip": false
-    },
+      "cpu": {
+    "interval": 1,
+    "format": "  {icon0}{icon1}{icon2}{icon3} {usage:>2}%",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+  },
     "memory": {
         "format": "{used}GiB/{total}GiB "
     },
@@ -116,7 +100,7 @@
         "format": "|{volume}% {icon}|",
         "format-bluetooth": "{volume}% {icon} {format_source}",
         "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": "|{volume}%  |",
+        "format-muted": "{volume}%  ",
         "format-icons": {
             "headphone": "",
             "hands-free": "",

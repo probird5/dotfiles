@@ -40,6 +40,22 @@ window#waybar {
 
 }
 
+#cpu {
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    padding-right: 10px;
+    padding-left: 10px;
+
+}
+
+#memory {
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    padding-right: 10px;
+    padding-left: 10px;
+
+}
+
 #battery {
     background-color: transparent;
     color: white;
