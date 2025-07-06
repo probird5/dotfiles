@@ -18,6 +18,7 @@ export PATH="$HOME/Documents/Scripts:$PATH"
 
 alias python="/usr/bin/python3"
 export PATH="$HOME/Applications:$PATH"
+export EDITOR="nvim"
 
 # Go paths
 export PATH=$PATH:/usr/local/go/bin
