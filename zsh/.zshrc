@@ -25,6 +25,10 @@ export PATH=$PATH:/usr/local/go/bin
 export GOROOT=/usr/lib/go
 export PATH=$PATH:~/go/bin
 
+## TEST
+export GTK_THEME=Tokyonight-Dark
+export XCURSOR_SIZE=24
+
 # From kali
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
