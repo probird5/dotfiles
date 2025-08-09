@@ -163,6 +163,12 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
+# Ghostty ssh fix
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    export TERM=xterm-256color
+fi
+
+
 #fzf integration
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
