@@ -1,7 +1,7 @@
 background-opacity = 0.85
 resize-overlay = never
 confirm-close-surface = false
-theme = tokyonight
+theme = TokyoNight
 cursor-style = block
 cursor-style-blink = false
 shell-integration-features = no-cursor

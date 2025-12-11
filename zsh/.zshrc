@@ -172,3 +172,7 @@ fi
 #fzf integration
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
+. "$HOME/.local/bin/env"
