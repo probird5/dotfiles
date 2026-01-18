@@ -70,17 +70,33 @@ cp zsh/.zshrc ~/
 If you use NixOS and maintain configs in a separate NixOS repo, use the sync script:
 
 ```bash
-# Sync all configs from NixOS
+# Sync all configs from NixOS (uses default paths)
 ./sync-from-nixos.sh
 
 # Sync specific apps
 ./sync-from-nixos.sh hypr nvim waybar
 
+# Specify custom source and destination paths
+./sync-from-nixos.sh -s ~/nixos/config -d ~/dotfiles
+
+# Combine custom paths with specific apps
+./sync-from-nixos.sh --source /path/to/nixos --dest /path/to/dotfiles hypr waybar
+
 # Show sync configuration
 ./sync-from-nixos.sh --status
 ```
 
-Edit the script to configure source/destination paths and add new apps.
+**Options:**
+| Flag | Description |
+|------|-------------|
+| `-s, --source PATH` | NixOS config directory |
+| `-d, --dest PATH` | Dotfiles directory |
+| `-h, --help` | Show help |
+| `--status` | Show sync configuration |
+
+You can also set paths via environment variables: `NIXOS_CONFIG` and `DOTFILES_DIR`.
+
+To add new apps, edit the arrays at the top of the script.
 
 ## Key Configs
 

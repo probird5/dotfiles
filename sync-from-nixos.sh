@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Sync dotfiles from NixOS config to dotfiles repo (stow format)
-# Usage: ./sync-from-nixos.sh [app1 app2 ...]
+# Usage: ./sync-from-nixos.sh [options] [app1 app2 ...]
 # If no apps specified, syncs all configured apps
 
 set -euo pipefail
 
-# Source and destination directories
+# Default source and destination directories (can be overridden via args or env)
 NIXOS_CONFIG="${NIXOS_CONFIG:-/home/probird5/nixos-pb/config}"
 DOTFILES_DIR="${DOTFILES_DIR:-/home/probird5/Documents/Repos/dotfiles}"
 
@@ -56,6 +56,31 @@ log_warn() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+show_help() {
+    cat << EOF
+Usage: $0 [options] [app1 app2 ...]
+
+Sync dotfiles from NixOS config to dotfiles repo (stow format).
+If no apps specified, syncs all configured apps.
+
+Options:
+  -s, --source PATH    NixOS config directory (default: $NIXOS_CONFIG)
+  -d, --dest PATH      Dotfiles directory (default: $DOTFILES_DIR)
+  -h, --help           Show this help
+  --status             Show sync configuration
+
+Examples:
+  $0                                      # Sync all apps with defaults
+  $0 hypr nvim                            # Sync specific apps
+  $0 -s ~/nixos/config -d ~/dotfiles      # Custom paths
+  $0 --source /path/to/nixos --dest /path/to/dotfiles hypr waybar
+
+Environment variables:
+  NIXOS_CONFIG    Source directory (overridden by --source)
+  DOTFILES_DIR    Destination directory (overridden by --dest)
+EOF
 }
 
 # Check if app is in array
@@ -185,28 +210,60 @@ main() {
     local apps_to_sync=()
 
     # Parse arguments
-    if [[ $# -eq 0 ]]; then
-        # Sync all apps
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            --status)
+                show_status
+                exit 0
+                ;;
+            -s|--source)
+                if [[ -z "${2:-}" ]]; then
+                    log_error "Missing argument for $1"
+                    exit 1
+                fi
+                NIXOS_CONFIG="$2"
+                shift 2
+                ;;
+            -d|--dest)
+                if [[ -z "${2:-}" ]]; then
+                    log_error "Missing argument for $1"
+                    exit 1
+                fi
+                DOTFILES_DIR="$2"
+                shift 2
+                ;;
+            -*)
+                log_error "Unknown option: $1"
+                echo "Use --help for usage information"
+                exit 1
+                ;;
+            *)
+                apps_to_sync+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Validate paths
+    if [[ ! -d "$NIXOS_CONFIG" ]]; then
+        log_error "Source directory does not exist: $NIXOS_CONFIG"
+        exit 1
+    fi
+
+    if [[ ! -d "$DOTFILES_DIR" ]]; then
+        log_error "Destination directory does not exist: $DOTFILES_DIR"
+        exit 1
+    fi
+
+    # If no apps specified, sync all
+    if [[ ${#apps_to_sync[@]} -eq 0 ]]; then
         apps_to_sync+=("${CONFIG_APPS[@]}")
         apps_to_sync+=("${HOME_DOTFILE_APPS[@]}")
         apps_to_sync+=("${DIRECT_COPY_APPS[@]}")
-    elif [[ "$1" == "--help" || "$1" == "-h" ]]; then
-        echo "Usage: $0 [options] [app1 app2 ...]"
-        echo ""
-        echo "Options:"
-        echo "  -h, --help     Show this help"
-        echo "  -s, --status   Show sync configuration"
-        echo "  -n, --dry-run  Show what would be synced (rsync dry-run)"
-        echo ""
-        echo "If no apps specified, syncs all configured apps."
-        echo ""
-        show_status
-        exit 0
-    elif [[ "$1" == "--status" || "$1" == "-s" ]]; then
-        show_status
-        exit 0
-    else
-        apps_to_sync=("$@")
     fi
 
     echo "=== Syncing dotfiles from NixOS config ==="
