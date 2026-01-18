@@ -168,7 +168,7 @@ stow_dotfiles() {
     for dir in "${stow_dirs[@]}"; do
         if [[ -d "$dir" ]]; then
             log_info "Stowing $dir..."
-            if stow -v "$dir" 2>&1; then
+            if stow -v -t "$HOME" "$dir" 2>&1; then
                 log_success "Stowed $dir"
             else
                 log_warn "Failed to stow $dir (may already exist or conflict)"
