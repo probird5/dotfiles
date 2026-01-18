@@ -143,6 +143,33 @@ install_apps() {
     log_success "Applications installed"
 }
 
+# Remove existing config that would conflict with stow
+remove_existing_config() {
+    local dir="$1"
+
+    # Map stow package to target paths that need to be removed
+    case "$dir" in
+        alacritty|ghostty|hypr|i3|nvim|rofi|starship|waybar)
+            rm -rf "$HOME/.config/$dir"
+            ;;
+        librewolf)
+            rm -rf "$HOME/.librewolf"
+            ;;
+        tmux)
+            rm -f "$HOME/.tmux.conf"
+            ;;
+        wezterm)
+            rm -f "$HOME/.wezterm.lua"
+            ;;
+        wlogout)
+            rm -f "$HOME/.config/wlogout"
+            ;;
+        zsh)
+            rm -f "$HOME/.zshrc"
+            ;;
+    esac
+}
+
 # Stow all dotfiles
 stow_dotfiles() {
     log_info "Stowing dotfiles from $DOTFILES_DIR"
@@ -168,10 +195,12 @@ stow_dotfiles() {
     for dir in "${stow_dirs[@]}"; do
         if [[ -d "$dir" ]]; then
             log_info "Stowing $dir..."
+            # Remove existing config to avoid conflicts
+            remove_existing_config "$dir"
             if stow -v -t "$HOME" "$dir" 2>&1; then
                 log_success "Stowed $dir"
             else
-                log_warn "Failed to stow $dir (may already exist or conflict)"
+                log_warn "Failed to stow $dir"
             fi
         fi
     done
