@@ -1,86 +1,80 @@
+/* Minimal Tokyo Night theme */
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetbrainsMono Nerd Font";
-    font-size: 13px;
+    font-family: "JetBrains Mono Light", "JetBrains Mono", "Symbols Nerd Font", monospace;
+    font-size: 12px;
+    font-weight: 400;
     min-height: 0;
 }
 
 window#waybar {
-    background: #1f1e1e;
-    /*border-bottom: 3px solid rgba(100, 114, 125, 0.5);*/
-    color: white;
+    background: #1a1b26;
+    color: #a9b1d6;
 }
-
 
 #workspaces button {
-    padding: 0 5px;
+    padding: 0 6px;
     background: transparent;
-    color: white;
-    border-bottom: 3px solid transparent;
+    color: #565f89;
 }
 
-#workspaces button.focused {
-    background: #64727D;
-    border-bottom: 3px solid white;
+#workspaces button.active {
+    color: #7aa2f7;
 }
-/*
- #clock, #battery {
-    padding:  5px;
-}
-*/
 
-#mode {
-    background: #64727D;
-    border-bottom: 3px solid white;
+#workspaces button:hover {
+    color: #c0caf5;
 }
 
 #clock {
-    background-color: transparent;
-
+    color: #a9b1d6;
 }
 
 #cpu {
-    padding-right: 10px;
-    padding-left: 10px;
-
+    color: #9ece6a;
 }
 
 #memory {
+    color: #bb9af7;
+}
 
+#backlight {
+    color: #e0af68;
 }
 
 #battery {
-    background-color: transparent;
-    color: white;
-    padding-right: 10px;
-
+    color: #e0af68;
 }
 
 #battery.charging {
-    color: white;
-    background-color: transparent;
-}
-
-@keyframes blink {
-    to {
-        background-color: #ffffff;
-        color: black;
-    }
+    color: #9ece6a;
 }
 
 #battery.warning:not(.charging) {
-    background: #f53c3c;
-    color: white;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: steps(12);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    color: #f7768e;
 }
-.modules-right > .module:not(:first-child) {   /* skip the very first one */
-    border-left: 1px solid white;             /* ← the white line        */
-    padding-left: 8px;                        /* breathing room           */
-    padding-right: 8px;
-    margin: 0;                                /* ensure line touches edges */
+
+#network {
+    color: #73daca;
+}
+
+#pulseaudio {
+    color: #ff9e64;
+}
+
+#tray {
+    color: #c0caf5;
+}
+
+#custom-power {
+    color: #f7768e;
+}
+
+.modules-left > widget > * {
+    margin: 0 4px;
+}
+
+.modules-right > widget > * {
+    margin: 0 6px;
 }

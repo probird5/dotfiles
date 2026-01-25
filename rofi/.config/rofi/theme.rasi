@@ -1,33 +1,24 @@
-      /*******************************************************************************
- * ROUNDED THEME FOR ROFI 
- * User                 : LR-Tech               
- * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
+/*******************************************************************************
+ * TOKYO NIGHT THEME FOR ROFI
  *******************************************************************************/
 
 * {
-    bg0:    #2E3440F2;
-    bg1:    #3B4252;
-    bg2:    #4C566A80;
-    bg3:    #88C0D0F2;
-    fg0:    #D8DEE9;
-    fg1:    #ECEFF4;
-    fg2:    #D8DEE9;
-    fg3:    #4C566A;
+    bg0:    #1a1b26F2;
+    bg1:    #24283b;
+    bg2:    #41486880;
+    bg3:    #7aa2f7F2;
+    fg0:    #c0caf5;
+    fg1:    #a9b1d6;
+    fg2:    #c0caf5;
+    fg3:    #565f89;
 }
-
 
 element selected {
     text-color: @bg1;
 }
 
-/*******************************************************************************
- * ROUNDED THEME FOR ROFI 
- * User                 : LR-Tech               
- * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
- *******************************************************************************/
-
 * {
-    font:   "Roboto 12";
+    font:   "JetbrainsMono Nerd Font 12";
 
     background-color:   transparent;
     text-color:         @fg0;
@@ -41,7 +32,9 @@ window {
     location:       center;
     width:          480;
     border-radius:  24px;
-    
+    border:         2px solid;
+    border-color:   #7aa2f7;
+
     background-color:   @bg0;
 }
 
@@ -117,4 +110,3 @@ element-icon {
 element-text {
     text-color: inherit;
 }
-
