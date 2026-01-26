@@ -57,7 +57,7 @@ install_packages() {
             sudo pacman -S --needed --noconfirm "${packages[@]}"
             ;;
         gentoo)
-            sudo emerge --ask --noreplace "${packages[@]}"
+            gentoo_emerge "${packages[@]}"
             ;;
         fedora)
             sudo dnf install -y "${packages[@]}"
@@ -67,6 +67,23 @@ install_packages() {
             sudo apt install -y "${packages[@]}"
             ;;
     esac
+}
+
+# Gentoo emerge wrapper - handles autounmask and config updates automatically
+gentoo_emerge() {
+    local packages=("$@")
+
+    # First attempt - let emerge write autounmask changes
+    sudo emerge --noreplace --autounmask-write=y --autounmask-continue=y "${packages[@]}" || true
+
+    # Auto-merge any pending config changes
+    if [[ -d /etc/portage/._cfg* ]] || sudo find /etc/portage -name "._cfg*" -type f 2>/dev/null | grep -q .; then
+        log_info "Merging portage config updates..."
+        sudo etc-update --automode -5
+    fi
+
+    # Second attempt after config merge
+    sudo emerge --noreplace "${packages[@]}"
 }
 
 # Core dependencies (stow + common tools)
@@ -102,7 +119,7 @@ setup_gentoo_overlays() {
     # Install eselect-repository if not present
     if ! command -v eselect &>/dev/null || ! eselect repository list &>/dev/null; then
         log_info "Installing eselect-repository..."
-        sudo emerge --ask --noreplace app-eselect/eselect-repository dev-vcs/git
+        sudo emerge --noreplace app-eselect/eselect-repository dev-vcs/git
     fi
 
     # Enable Pentoo overlay (security/pentesting tools)
@@ -350,8 +367,8 @@ install_gentoo_apps() {
     echo "... and more (${#all_pkgs[@]} total packages)"
     echo ""
 
-    # Install packages
-    sudo emerge --ask --noreplace "${all_pkgs[@]}"
+    # Install packages using wrapper that handles autounmask
+    gentoo_emerge "${all_pkgs[@]}"
 
     log_success "Gentoo packages installed"
 }
