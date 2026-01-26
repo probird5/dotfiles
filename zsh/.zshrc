@@ -10,10 +10,147 @@
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 #ZSH_THEME="robbyrussell"
 
-# Starship configuration
-eval "$(starship init zsh)"
-export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+# FZF integration
 source <(fzf --zsh)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Custom ZSH Prompt - Tokyo Night Style
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Colors (Tokyo Night palette)
+typeset -A colors
+colors=(
+    [bg]='#1a1b26'
+    [fg]='#c0caf5'
+    [cyan]='#7dcfff'
+    [blue]='#7aa2f7'
+    [purple]='#bb9af7'
+    [magenta]='#ff007c'
+    [green]='#9ece6a'
+    [orange]='#ff9e64'
+    [red]='#f7768e'
+    [yellow]='#e0af68'
+    [gray]='#565f89'
+)
+
+# Git info function
+git_prompt_info() {
+    local ref
+    ref=$(git symbolic-ref --short HEAD 2>/dev/null) || \
+    ref=$(git rev-parse --short HEAD 2>/dev/null) || return 0
+
+    local git_status=""
+    local staged=$(git diff --cached --numstat 2>/dev/null | wc -l)
+    local unstaged=$(git diff --numstat 2>/dev/null | wc -l)
+    local untracked=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l)
+
+    # Build status indicators
+    [[ $staged -gt 0 ]] && git_status+="%F{green}+$staged%f "
+    [[ $unstaged -gt 0 ]] && git_status+="%F{yellow}~$unstaged%f "
+    [[ $untracked -gt 0 ]] && git_status+="%F{red}?$untracked%f "
+
+    # Check for stashes
+    local stashes=$(git stash list 2>/dev/null | wc -l)
+    [[ $stashes -gt 0 ]] && git_status+="%F{cyan}≡$stashes%f "
+
+    # Ahead/behind
+    local ahead=$(git rev-list --count @{upstream}..HEAD 2>/dev/null)
+    local behind=$(git rev-list --count HEAD..@{upstream} 2>/dev/null)
+    [[ $ahead -gt 0 ]] && git_status+="%F{green}↑$ahead%f"
+    [[ $behind -gt 0 ]] && git_status+="%F{red}↓$behind%f"
+
+    echo "%F{#bb9af7} $ref%f ${git_status}"
+}
+
+# Directory with home abbreviation and smart truncation
+prompt_dir() {
+    local dir="${PWD/#$HOME/~}"
+    local max_len=40
+
+    if [[ ${#dir} -gt $max_len ]]; then
+        # Show first dir, ellipsis, and last 2 dirs
+        local parts=(${(s:/:)dir})
+        if [[ ${#parts[@]} -gt 3 ]]; then
+            echo "${parts[1]}/…/${parts[-2]}/${parts[-1]}"
+        else
+            echo "$dir"
+        fi
+    else
+        echo "$dir"
+    fi
+}
+
+# Exit status indicator
+prompt_status() {
+    echo "%(?.%F{#9ece6a}❯%f.%F{#f7768e}❯%f)"
+}
+
+# SSH indicator
+prompt_ssh() {
+    [[ -n "$SSH_CONNECTION" ]] && echo "%F{#ff9e64}⟨ssh⟩%f "
+}
+
+# Virtual env indicator
+prompt_venv() {
+    [[ -n "$VIRTUAL_ENV" ]] && echo "%F{#7dcfff}(${VIRTUAL_ENV:t})%f "
+}
+
+# Jobs indicator
+prompt_jobs() {
+    echo "%(1j.%F{#e0af68}⚙%j%f .)"
+}
+
+# Build the prompt
+build_prompt() {
+    local nl=$'\n'
+
+    # Top line: SSH + directory + git
+    echo -n "$(prompt_ssh)"
+    echo -n "%F{#7aa2f7}$(prompt_dir)%f"
+    echo -n "$(git_prompt_info)"
+    echo -n "$nl"
+
+    # Bottom line: venv + jobs + arrow
+    echo -n "$(prompt_venv)"
+    echo -n "$(prompt_jobs)"
+    echo -n "$(prompt_status) "
+}
+
+# Right prompt: time
+build_rprompt() {
+    echo "%F{#565f89}%T%f"
+}
+
+# Set prompts
+setopt PROMPT_SUBST
+PROMPT='$(build_prompt)'
+RPROMPT='$(build_rprompt)'
+
+# Transient prompt - cleaner history (optional, comment out if you don't like it)
+zle-line-init() {
+    emulate -L zsh
+    [[ $CONTEXT == start ]] || return 0
+    while true; do
+        zle .recursive-edit
+        local -i ret=$?
+        [[ $ret == 0 && $KEYS == $'\4' ]] || break
+        [[ -o ignore_eof ]] || exit 0
+    done
+    local saved_prompt=$PROMPT
+    local saved_rprompt=$RPROMPT
+    PROMPT='%(?.%F{#9ece6a}❯%f.%F{#f7768e}❯%f) '
+    RPROMPT=''
+    zle .reset-prompt
+    PROMPT=$saved_prompt
+    RPROMPT=$saved_rprompt
+    if (( ret )); then
+        zle .send-break
+    else
+        zle .accept-line
+    fi
+    return ret
+}
+zle -N zle-line-init
 export PATH="$HOME/Documents/Scripts:$PATH"
 
 alias python="/usr/bin/python3"

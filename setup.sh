@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Dotfiles setup script for Arch, Gentoo, Fedora, and Kali
-# Usage: ./setup.sh [--deps-only | --stow-only | --all]
+# Usage: ./setup.sh [--deps-only | --stow-only | --portage-only | --all]
+# X11 focused (DWM, i3)
 
 set -euo pipefail
 
@@ -91,36 +92,265 @@ install_core_deps() {
     log_success "Core dependencies installed"
 }
 
-# Optional: Install applications that the dotfiles configure
+# ============================================================================
+# GENTOO PORTAGE CONFIGURATION
+# ============================================================================
+
+setup_gentoo_portage() {
+    log_info "Setting up Gentoo Portage configuration..."
+
+    # Create portage directories
+    sudo mkdir -p /etc/portage/package.use
+    sudo mkdir -p /etc/portage/package.accept_keywords
+    sudo mkdir -p /etc/portage/package.mask
+    sudo mkdir -p /etc/portage/repos.conf
+
+    # --- make.conf additions ---
+    log_info "Checking make.conf..."
+    local makeconf="/etc/portage/make.conf"
+
+    # Add VIDEO_CARDS if not present
+    if ! grep -q "VIDEO_CARDS" "$makeconf" 2>/dev/null; then
+        log_info "Adding VIDEO_CARDS to make.conf..."
+        echo '' | sudo tee -a "$makeconf" > /dev/null
+        echo '# Graphics drivers (adjust for your hardware: nvidia, amdgpu, intel, etc.)' | sudo tee -a "$makeconf" > /dev/null
+        echo 'VIDEO_CARDS="nvidia"' | sudo tee -a "$makeconf" > /dev/null
+    fi
+
+    # Add INPUT_DEVICES if not present
+    if ! grep -q "INPUT_DEVICES" "$makeconf" 2>/dev/null; then
+        echo 'INPUT_DEVICES="libinput"' | sudo tee -a "$makeconf" > /dev/null
+    fi
+
+    # Add ACCEPT_LICENSE if not present
+    if ! grep -q "ACCEPT_LICENSE" "$makeconf" 2>/dev/null; then
+        echo 'ACCEPT_LICENSE="*"' | sudo tee -a "$makeconf" > /dev/null
+    fi
+
+    # --- package.use ---
+    log_info "Setting up package.use..."
+
+    # X11 and DWM dependencies
+    sudo tee /etc/portage/package.use/x11 > /dev/null << 'EOF'
+# X11 and font rendering
+media-libs/freetype harfbuzz
+x11-libs/pango X
+media-libs/libglvnd X
+media-libs/mesa X
+
+# X11 support for various libs
+x11-libs/libxkbcommon X
+EOF
+
+    # PipeWire audio
+    sudo tee /etc/portage/package.use/pipewire > /dev/null << 'EOF'
+# PipeWire audio stack
+media-video/pipewire sound-server
+media-sound/pulseaudio -daemon
+EOF
+
+    # NetworkManager
+    sudo tee /etc/portage/package.use/networkmanager > /dev/null << 'EOF'
+# NetworkManager WiFi support
+net-wireless/wpa_supplicant dbus
+net-misc/networkmanager wifi
+EOF
+
+    # D-Bus menu for system tray
+    sudo tee /etc/portage/package.use/dbusmenu > /dev/null << 'EOF'
+# System tray support
+dev-libs/libdbusmenu gtk3
+EOF
+
+    # --- package.accept_keywords ---
+    log_info "Setting up package.accept_keywords..."
+
+    # User applications (unstable)
+    sudo tee /etc/portage/package.accept_keywords/apps > /dev/null << 'EOF'
+# Terminals and tools
+app-misc/yazi ~amd64
+
+# Fonts
+media-fonts/nerdfonts ~amd64
+
+# Audio/brightness control
+media-sound/pamixer ~amd64
+app-misc/brightnessctl ~amd64
+
+# Themes and colors
+x11-themes/adw-gtk3 ~amd64
+x11-misc/pywal16 ~amd64
+EOF
+
+    log_success "Portage configuration complete"
+}
+
+# ============================================================================
+# GENTOO PACKAGES (X11 FOCUSED)
+# ============================================================================
+
+# Core system
+GENTOO_CORE=(
+    "app-admin/stow"
+    "dev-vcs/git"
+    "sys-apps/dbus"
+    "app-misc/tmux"
+    "app-shells/zsh"
+    "app-shells/fzf"
+)
+
+# DWM build dependencies
+GENTOO_DWM_BUILD=(
+    "x11-libs/libX11"
+    "x11-libs/libXinerama"
+    "x11-libs/libXft"
+    "x11-libs/libxcb"
+    "x11-libs/xcb-util"
+    "media-libs/freetype"
+    "media-libs/fontconfig"
+    "x11-base/xorg-proto"
+    "sys-devel/gcc"
+    "dev-build/make"
+    "dev-util/pkgconf"
+)
+
+# X11 environment
+GENTOO_X11=(
+    "x11-base/xorg-server"
+    "x11-apps/xinit"
+    "x11-apps/xrandr"
+    "x11-apps/xrdb"
+    "x11-apps/xmodmap"
+    "x11-apps/xset"
+    "x11-misc/picom"
+    "media-gfx/feh"
+    "x11-misc/dunst"
+    "x11-misc/xclip"
+    "x11-misc/xsel"
+    "x11-misc/rofi"
+    "x11-apps/xprop"
+    "media-gfx/flameshot"
+    "x11-misc/xss-lock"
+    "x11-misc/i3lock"
+)
+
+# i3 window manager
+GENTOO_I3=(
+    "x11-wm/i3"
+    "x11-misc/i3status"
+)
+
+# Terminals
+GENTOO_TERMINALS=(
+    "x11-terms/alacritty"
+    # ghostty - may need manual install or overlay
+)
+
+# Editors and tools
+GENTOO_EDITORS=(
+    "app-editors/neovim"
+    "app-shells/starship"
+)
+
+# File managers
+GENTOO_FILEMANAGERS=(
+    "xfce-base/thunar"
+    "app-misc/yazi"
+)
+
+# Audio
+GENTOO_AUDIO=(
+    "media-video/pipewire"
+    "media-sound/pamixer"
+    "media-sound/playerctl"
+)
+
+# System utilities
+GENTOO_UTILS=(
+    "app-misc/brightnessctl"
+    "x11-misc/pywal16"
+    "net-misc/networkmanager"
+    "gnome-extra/nm-applet"
+    "x11-misc/dex"
+)
+
+# Fonts
+GENTOO_FONTS=(
+    "media-fonts/nerdfonts"
+    "media-fonts/noto-emoji"
+    "media-fonts/jetbrains-mono"
+)
+
+install_gentoo_apps() {
+    log_info "Installing Gentoo packages (X11 focused)..."
+
+    # Combine all package arrays
+    local all_pkgs=(
+        "${GENTOO_CORE[@]}"
+        "${GENTOO_DWM_BUILD[@]}"
+        "${GENTOO_X11[@]}"
+        "${GENTOO_I3[@]}"
+        "${GENTOO_TERMINALS[@]}"
+        "${GENTOO_EDITORS[@]}"
+        "${GENTOO_FILEMANAGERS[@]}"
+        "${GENTOO_AUDIO[@]}"
+        "${GENTOO_UTILS[@]}"
+        "${GENTOO_FONTS[@]}"
+    )
+
+    log_info "The following packages will be installed:"
+    printf '%s\n' "${all_pkgs[@]}" | sort | uniq | head -20
+    echo "... and more (${#all_pkgs[@]} total packages)"
+    echo ""
+
+    # Install packages
+    sudo emerge --ask --noreplace "${all_pkgs[@]}"
+
+    log_success "Gentoo packages installed"
+}
+
+# ============================================================================
+# OTHER DISTRO PACKAGES
+# ============================================================================
+
 install_apps() {
     local distro="$1"
     log_info "Installing applications..."
 
-    # Common packages across distros (names may vary)
+    # Arch packages (X11 focused)
     local arch_pkgs=(
-        neovim zsh tmux starship rofi waybar
-        hyprland hyprpaper hyprlock hypridle
-        alacritty wezterm wlogout fzf
-    )
-
-    local gentoo_pkgs=(
-        app-editors/neovim app-shells/zsh app-misc/tmux
-        app-shells/starship x11-misc/rofi gui-apps/waybar
-        gui-wm/hyprland gui-apps/hyprpaper gui-apps/hyprlock
-        x11-terms/alacritty app-misc/wezterm gui-apps/wlogout
-        app-shells/fzf
+        # Core
+        neovim zsh tmux starship fzf stow git
+        # X11/DWM
+        xorg-server xorg-xinit xorg-xrandr xorg-xrdb xorg-xmodmap xorg-xset
+        picom feh dunst xclip xsel rofi flameshot xss-lock i3lock
+        # i3
+        i3-wm i3status
+        # Terminals
+        alacritty ghostty
+        # File managers
+        thunar yazi
+        # Audio
+        pipewire pipewire-pulse pamixer playerctl
+        # Utils
+        brightnessctl python-pywal networkmanager network-manager-applet dex
+        # Fonts
+        ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols noto-fonts-emoji
     )
 
     local fedora_pkgs=(
-        neovim zsh tmux starship rofi waybar
-        hyprland hyprpaper hyprlock hypridle
-        alacritty wezterm wlogout fzf
+        neovim zsh tmux starship rofi fzf
+        alacritty
+        picom feh dunst thunar
+        pipewire pamixer playerctl brightnessctl
+        i3 i3status
     )
 
     local debian_pkgs=(
         neovim zsh tmux rofi fzf
-        # Note: hyprland/waybar may need external repos on Kali/Debian
-        # alacritty may need cargo install
+        picom feh dunst thunar
+        pipewire
+        i3 i3status
     )
 
     case "$distro" in
@@ -128,14 +358,14 @@ install_apps() {
             install_packages "$distro" "${arch_pkgs[@]}"
             ;;
         gentoo)
-            install_packages "$distro" "${gentoo_pkgs[@]}"
+            setup_gentoo_portage
+            install_gentoo_apps
             ;;
         fedora)
             install_packages "$distro" "${fedora_pkgs[@]}"
             ;;
         debian)
             log_warn "Some packages may not be available in default repos"
-            log_warn "You may need to install hyprland, waybar, starship manually"
             install_packages "$distro" "${debian_pkgs[@]}"
             ;;
     esac
@@ -147,9 +377,8 @@ install_apps() {
 remove_existing_config() {
     local dir="$1"
 
-    # Map stow package to target paths that need to be removed
     case "$dir" in
-        alacritty|ghostty|hypr|i3|nvim|rofi|starship|waybar)
+        alacritty|ghostty|i3|nvim|picom|rofi|starship)
             rm -rf "$HOME/.config/$dir"
             ;;
         librewolf)
@@ -157,12 +386,6 @@ remove_existing_config() {
             ;;
         tmux)
             rm -f "$HOME/.tmux.conf"
-            ;;
-        wezterm)
-            rm -f "$HOME/.wezterm.lua"
-            ;;
-        wlogout)
-            rm -f "$HOME/.config/wlogout"
             ;;
         zsh)
             rm -f "$HOME/.zshrc"
@@ -175,33 +398,39 @@ stow_dotfiles() {
     log_info "Stowing dotfiles from $DOTFILES_DIR"
     cd "$DOTFILES_DIR"
 
-    # Directories to stow (exclude non-stow dirs)
+    # Directories to stow (X11 focused)
     local stow_dirs=(
         alacritty
         ghostty
-        hypr
         i3
         librewolf
         nvim
+        picom
         rofi
         starship
         tmux
-        waybar
-        wezterm
-        wlogout
         zsh
     )
 
     for dir in "${stow_dirs[@]}"; do
         if [[ -d "$dir" ]]; then
             log_info "Stowing $dir..."
-            # Remove existing config to avoid conflicts
             remove_existing_config "$dir"
             if stow -v -t "$HOME" "$dir" 2>&1; then
                 log_success "Stowed $dir"
             else
                 log_warn "Failed to stow $dir"
             fi
+        fi
+    done
+
+    # Stow root-level dotfiles
+    for file in .xinitrc .Xresources .Xmodmap; do
+        if [[ -f "$DOTFILES_DIR/$file" ]]; then
+            log_info "Linking $file..."
+            rm -f "$HOME/$file"
+            ln -sf "$DOTFILES_DIR/$file" "$HOME/$file"
+            log_success "Linked $file"
         fi
     done
 
@@ -226,6 +455,50 @@ copy_extras() {
     fi
 }
 
+# Build DWM
+build_dwm() {
+    local dwm_dir="$HOME/Documents/Repos/dwm-config"
+
+    if [[ -d "$dwm_dir" ]]; then
+        log_info "Building DWM..."
+        cd "$dwm_dir"
+        make clean
+        make
+        log_success "DWM built at $dwm_dir/dwm"
+    else
+        log_warn "DWM config not found at $dwm_dir"
+    fi
+}
+
+# Install TPM (Tmux Plugin Manager) and plugins
+setup_tmux() {
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+
+    log_info "Setting up Tmux Plugin Manager..."
+
+    # Install TPM if not present
+    if [[ ! -d "$tpm_dir" ]]; then
+        log_info "Cloning TPM..."
+        git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+        log_success "TPM installed"
+    else
+        log_info "TPM already installed, updating..."
+        cd "$tpm_dir" && git pull
+        log_success "TPM updated"
+    fi
+
+    # Install plugins if tmux is available
+    if command -v tmux &>/dev/null; then
+        log_info "Installing tmux plugins..."
+        # Run TPM install script (works without tmux server running)
+        "$tpm_dir/bin/install_plugins" || true
+        log_success "Tmux plugins installed"
+    else
+        log_warn "Tmux not found, skipping plugin installation"
+        log_info "Run 'prefix + I' inside tmux to install plugins later"
+    fi
+}
+
 # Change default shell to zsh
 set_zsh_shell() {
     if command -v zsh &>/dev/null; then
@@ -244,17 +517,31 @@ show_help() {
 Usage: $0 [option]
 
 Options:
-  --deps-only    Only install dependencies (stow + git)
-  --apps         Install dependencies and applications
-  --stow-only    Only stow dotfiles (assumes deps installed)
-  --all          Install everything and stow dotfiles (default)
-  -h, --help     Show this help
+  --deps-only      Only install dependencies (stow + git)
+  --apps           Install dependencies and applications
+  --portage-only   Only setup Gentoo portage config (Gentoo only)
+  --stow-only      Only stow dotfiles (assumes deps installed)
+  --build-dwm      Build DWM from source
+  --tmux           Install TPM and tmux plugins
+  --all            Install everything and stow dotfiles (default)
+  -h, --help       Show this help
 
 Supported distributions:
   - Arch Linux (and derivatives: EndeavourOS, Manjaro)
   - Gentoo
   - Fedora
   - Kali Linux (and Debian/Ubuntu)
+
+X11 focused setup:
+  - Window Managers: DWM (default), i3
+  - Compositor: picom
+  - Launcher: rofi
+  - Screenshots: flameshot
+  - Notifications: dunst
+
+Tmux setup:
+  - Installs TPM (Tmux Plugin Manager)
+  - Plugins: vim-tmux-navigator, tokyo-night-tmux, better-mouse-mode, tmux-yank
 EOF
 }
 
@@ -288,15 +575,31 @@ main() {
             install_core_deps "$distro"
             install_apps "$distro"
             ;;
+        --portage-only)
+            if [[ "$distro" == "gentoo" ]]; then
+                setup_gentoo_portage
+            else
+                log_error "--portage-only is only for Gentoo"
+                exit 1
+            fi
+            ;;
         --stow-only)
             stow_dotfiles
             copy_extras
+            ;;
+        --build-dwm)
+            build_dwm
+            ;;
+        --tmux)
+            setup_tmux
             ;;
         --all)
             install_core_deps "$distro"
             install_apps "$distro"
             stow_dotfiles
             copy_extras
+            setup_tmux
+            [[ "$distro" == "gentoo" || "$distro" == "arch" ]] && build_dwm
             set_zsh_shell
             ;;
         *)
@@ -308,6 +611,17 @@ main() {
 
     echo ""
     log_success "Setup complete!"
+
+    if [[ "$distro" == "gentoo" ]]; then
+        echo ""
+        log_info "Gentoo post-install notes:"
+        echo "  1. Run 'startx' to launch X11 with DWM (default)"
+        echo "  2. Or 'startx ~/.xinitrc i3' for i3"
+        echo "  3. PipeWire: auto-started via .xinitrc"
+        echo "  4. For LibreWolf: install via flatpak or add librewolf overlay"
+        echo "  5. For Ghostty: may need manual install or overlay"
+        echo "  6. Tmux: press 'prefix + I' to install/update plugins if needed"
+    fi
 }
 
 main "$@"
