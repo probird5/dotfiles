@@ -181,6 +181,11 @@ x11-libs/libxkbcommon X
 
 # Rofi launcher - X11 support
 x11-misc/rofi X
+
+# XFCE/Thunar dependencies
+xfce-base/libxfce4ui X
+xfce-base/exo X
+xfce-base/xfconf X
 EOF
 
     # PipeWire audio
