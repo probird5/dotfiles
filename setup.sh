@@ -93,6 +93,44 @@ install_core_deps() {
 }
 
 # ============================================================================
+# GENTOO OVERLAYS (Pentoo + GURU)
+# ============================================================================
+
+setup_gentoo_overlays() {
+    log_info "Setting up Gentoo overlays..."
+
+    # Install eselect-repository if not present
+    if ! command -v eselect &>/dev/null || ! eselect repository list &>/dev/null; then
+        log_info "Installing eselect-repository..."
+        sudo emerge --ask --noreplace app-eselect/eselect-repository dev-vcs/git
+    fi
+
+    # Enable Pentoo overlay (security/pentesting tools)
+    if ! eselect repository list -i | grep -q "pentoo"; then
+        log_info "Enabling Pentoo overlay..."
+        sudo eselect repository enable pentoo
+        log_success "Pentoo overlay enabled"
+    else
+        log_info "Pentoo overlay already enabled"
+    fi
+
+    # Enable GURU overlay (community packages)
+    if ! eselect repository list -i | grep -q "guru"; then
+        log_info "Enabling GURU overlay..."
+        sudo eselect repository enable guru
+        log_success "GURU overlay enabled"
+    else
+        log_info "GURU overlay already enabled"
+    fi
+
+    # Sync overlays
+    log_info "Syncing overlays (this may take a while)..."
+    sudo emerge --sync
+
+    log_success "Overlays configured and synced"
+}
+
+# ============================================================================
 # GENTOO PORTAGE CONFIGURATION
 # ============================================================================
 
@@ -358,6 +396,7 @@ install_apps() {
             install_packages "$distro" "${arch_pkgs[@]}"
             ;;
         gentoo)
+            setup_gentoo_overlays
             setup_gentoo_portage
             install_gentoo_apps
             ;;
@@ -519,6 +558,7 @@ Usage: $0 [option]
 Options:
   --deps-only      Only install dependencies (stow + git)
   --apps           Install dependencies and applications
+  --overlays-only  Only setup Gentoo overlays - Pentoo + GURU (Gentoo only)
   --portage-only   Only setup Gentoo portage config (Gentoo only)
   --stow-only      Only stow dotfiles (assumes deps installed)
   --build-dwm      Build DWM from source
@@ -575,6 +615,14 @@ main() {
             install_core_deps "$distro"
             install_apps "$distro"
             ;;
+        --overlays-only)
+            if [[ "$distro" == "gentoo" ]]; then
+                setup_gentoo_overlays
+            else
+                log_error "--overlays-only is only for Gentoo"
+                exit 1
+            fi
+            ;;
         --portage-only)
             if [[ "$distro" == "gentoo" ]]; then
                 setup_gentoo_portage
@@ -618,9 +666,10 @@ main() {
         echo "  1. Run 'startx' to launch X11 with DWM (default)"
         echo "  2. Or 'startx ~/.xinitrc i3' for i3"
         echo "  3. PipeWire: auto-started via .xinitrc"
-        echo "  4. For LibreWolf: install via flatpak or add librewolf overlay"
-        echo "  5. For Ghostty: may need manual install or overlay"
-        echo "  6. Tmux: press 'prefix + I' to install/update plugins if needed"
+        echo "  4. Overlays enabled: Pentoo (security tools), GURU (community packages)"
+        echo "  5. For LibreWolf: install via flatpak or GURU overlay"
+        echo "  6. For Ghostty: available in GURU overlay"
+        echo "  7. Tmux: press 'prefix + I' to install/update plugins if needed"
     fi
 }
 
