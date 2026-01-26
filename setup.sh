@@ -182,24 +182,20 @@ setup_gentoo_portage() {
     # --- package.use ---
     log_info "Setting up package.use..."
 
-    # X11 desktop package.use - ensure X flag for packages that need it
-    sudo tee /etc/portage/package.use/desktop > /dev/null << 'EOF'
-# === X11 REQUIRED FLAGS ===
-# These packages require X USE flag explicitly
-x11-misc/rofi X -wayland
-x11-libs/libxkbcommon X
-media-libs/libglvnd X
-media-libs/mesa X
-x11-libs/pango X
+    # X11 desktop package.use - force X flag globally for X11 setup
+    sudo tee /etc/portage/package.use/00-global-x11 > /dev/null << 'EOF'
+# Force X11 for all packages, disable Wayland
+*/* X -wayland
+EOF
 
+    # Package-specific USE flags
+    sudo tee /etc/portage/package.use/desktop > /dev/null << 'EOF'
 # XFCE/Thunar and GTK dependencies
-xfce-base/libxfce4ui X gtk3
-xfce-base/exo X gtk3
-xfce-base/xfconf X
+xfce-base/libxfce4ui gtk3
+xfce-base/exo gtk3
 xfce-base/thunar trash-panel-plugin
 dev-libs/libdbusmenu gtk3
 
-# === OTHER FLAGS ===
 # Font rendering
 media-libs/freetype harfbuzz
 
