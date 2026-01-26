@@ -178,6 +178,9 @@ media-libs/mesa X
 
 # X11 support for various libs
 x11-libs/libxkbcommon X
+
+# Rofi launcher - X11 support
+x11-misc/rofi X
 EOF
 
     # PipeWire audio
