@@ -147,6 +147,20 @@ setup_gentoo_portage() {
     log_info "Checking make.conf..."
     local makeconf="/etc/portage/make.conf"
 
+    # Add global USE flags for X11 setup if not present
+    if ! grep -q "^USE=" "$makeconf" 2>/dev/null; then
+        log_info "Adding global USE flags to make.conf..."
+        echo '' | sudo tee -a "$makeconf" > /dev/null
+        echo '# Global USE flags for X11 desktop' | sudo tee -a "$makeconf" > /dev/null
+        echo 'USE="X dbus elogind pulseaudio pipewire networkmanager -wayland -systemd"' | sudo tee -a "$makeconf" > /dev/null
+    else
+        # Ensure X is in USE flags
+        if ! grep "^USE=" "$makeconf" | grep -q "\bX\b"; then
+            log_warn "USE variable exists but may not include X flag"
+            log_info "Consider adding 'X dbus elogind pulseaudio pipewire' to your USE flags"
+        fi
+    fi
+
     # Add VIDEO_CARDS if not present
     if ! grep -q "VIDEO_CARDS" "$makeconf" 2>/dev/null; then
         log_info "Adding VIDEO_CARDS to make.conf..."
@@ -168,24 +182,35 @@ setup_gentoo_portage() {
     # --- package.use ---
     log_info "Setting up package.use..."
 
-    # X11 and DWM dependencies
-    sudo tee /etc/portage/package.use/x11 > /dev/null << 'EOF'
-# X11 and font rendering
-media-libs/freetype harfbuzz
-x11-libs/pango X
+    # X11 desktop package.use - ensure X flag for packages that need it
+    sudo tee /etc/portage/package.use/desktop > /dev/null << 'EOF'
+# === X11 REQUIRED FLAGS ===
+# These packages require X USE flag explicitly
+x11-misc/rofi X -wayland
+x11-libs/libxkbcommon X
 media-libs/libglvnd X
 media-libs/mesa X
+x11-libs/pango X
 
-# X11 support for various libs
-x11-libs/libxkbcommon X
-
-# Rofi launcher - X11 support
-x11-misc/rofi X
-
-# XFCE/Thunar dependencies
-xfce-base/libxfce4ui X
-xfce-base/exo X
+# XFCE/Thunar and GTK dependencies
+xfce-base/libxfce4ui X gtk3
+xfce-base/exo X gtk3
 xfce-base/xfconf X
+xfce-base/thunar trash-panel-plugin
+dev-libs/libdbusmenu gtk3
+
+# === OTHER FLAGS ===
+# Font rendering
+media-libs/freetype harfbuzz
+
+# Neovim with LuaJIT
+app-editors/neovim lua_single_target_luajit
+
+# Flameshot screenshot tool
+media-gfx/flameshot dbus
+
+# Dunst notifications
+x11-misc/dunst dunstify
 EOF
 
     # PipeWire audio
@@ -202,18 +227,15 @@ net-wireless/wpa_supplicant dbus
 net-misc/networkmanager wifi
 EOF
 
-    # D-Bus menu for system tray
-    sudo tee /etc/portage/package.use/dbusmenu > /dev/null << 'EOF'
-# System tray support
-dev-libs/libdbusmenu gtk3
-EOF
-
     # --- package.accept_keywords ---
     log_info "Setting up package.accept_keywords..."
 
-    # User applications (unstable)
+    # User applications (unstable/testing)
     sudo tee /etc/portage/package.accept_keywords/apps > /dev/null << 'EOF'
-# Terminals and tools
+# Terminals
+x11-terms/ghostty ~amd64
+
+# File managers and tools
 app-misc/yazi ~amd64
 
 # Fonts
@@ -226,6 +248,12 @@ app-misc/brightnessctl ~amd64
 # Themes and colors
 x11-themes/adw-gtk3 ~amd64
 x11-misc/pywal16 ~amd64
+
+# Editors
+app-editors/neovim ~amd64
+
+# Shell tools
+app-shells/starship ~amd64
 EOF
 
     log_success "Portage configuration complete"
@@ -289,7 +317,7 @@ GENTOO_I3=(
 # Terminals
 GENTOO_TERMINALS=(
     "x11-terms/alacritty"
-    # ghostty - may need manual install or overlay
+    "x11-terms/ghostty"
 )
 
 # Editors and tools
@@ -404,8 +432,8 @@ install_apps() {
             install_packages "$distro" "${arch_pkgs[@]}"
             ;;
         gentoo)
-            setup_gentoo_overlays
             setup_gentoo_portage
+            setup_gentoo_overlays
             install_gentoo_apps
             ;;
         fedora)
@@ -676,8 +704,7 @@ main() {
         echo "  3. PipeWire: auto-started via .xinitrc"
         echo "  4. Overlays enabled: Pentoo (security tools), GURU (community packages)"
         echo "  5. For LibreWolf: install via flatpak or GURU overlay"
-        echo "  6. For Ghostty: available in GURU overlay"
-        echo "  7. Tmux: press 'prefix + I' to install/update plugins if needed"
+        echo "  6. Tmux: press 'prefix + I' to install/update plugins if needed"
     fi
 }
 
