@@ -179,6 +179,12 @@ setup_gentoo_portage() {
         echo 'ACCEPT_LICENSE="*"' | sudo tee -a "$makeconf" > /dev/null
     fi
 
+    # Add ACCEPT_KEYWORDS for ~amd64 (testing) packages
+    if ! grep -q "ACCEPT_KEYWORDS" "$makeconf" 2>/dev/null; then
+        log_info "Enabling ~amd64 (testing) packages..."
+        echo 'ACCEPT_KEYWORDS="~amd64"' | sudo tee -a "$makeconf" > /dev/null
+    fi
+
     # --- package.use ---
     log_info "Setting up package.use..."
 
@@ -221,35 +227,6 @@ EOF
 # NetworkManager WiFi support
 net-wireless/wpa_supplicant dbus
 net-misc/networkmanager wifi
-EOF
-
-    # --- package.accept_keywords ---
-    log_info "Setting up package.accept_keywords..."
-
-    # User applications (unstable/testing)
-    sudo tee /etc/portage/package.accept_keywords/apps > /dev/null << 'EOF'
-# Terminals
-x11-terms/ghostty ~amd64
-
-# File managers and tools
-app-misc/yazi ~amd64
-
-# Fonts
-media-fonts/nerdfonts ~amd64
-
-# Audio/brightness control
-media-sound/pamixer ~amd64
-app-misc/brightnessctl ~amd64
-
-# Themes and colors
-x11-themes/adw-gtk3 ~amd64
-x11-misc/pywal16 ~amd64
-
-# Editors
-app-editors/neovim ~amd64
-
-# Shell tools
-app-shells/starship ~amd64
 EOF
 
     log_success "Portage configuration complete"
