@@ -1,5 +1,11 @@
-vim.lsp.enable("lua_ls");
-vim.lsp.enable("clangd");
-vim.lsp.enable("html");
-vim.lsp.enable("nixd");
-vim.lsp.enable("prettier");
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("clangd")
+vim.lsp.enable("html")
+vim.lsp.enable("nixd")
+vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("pyright")
+vim.lsp.enable("ruff")
+vim.lsp.enable("gopls")
+vim.lsp.enable("bashls")
+vim.lsp.enable("yamlls")
+vim.lsp.enable("ts_ls")

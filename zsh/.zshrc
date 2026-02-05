@@ -151,7 +151,7 @@ zle-line-init() {
     return ret
 }
 zle -N zle-line-init
-export PATH="$HOME/Documents/Scripts:$PATH"
+export PATH="$HOME/.local/bin:$HOME/Documents/Scripts:$HOME/.config/emacs/bin:$PATH"
 
 alias python="/usr/bin/python3"
 export PATH="$HOME/Applications:$PATH"
@@ -162,8 +162,6 @@ export PATH=$PATH:/usr/local/go/bin
 export GOROOT=/usr/lib/go
 export PATH=$PATH:~/go/bin
 
-## TEST
-export GTK_THEME=Tokyonight-Dark
 export XCURSOR_SIZE=24
 
 # From kali
@@ -309,3 +307,5 @@ fi
 #fzf integration
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+. "$HOME/.local/bin/env"
