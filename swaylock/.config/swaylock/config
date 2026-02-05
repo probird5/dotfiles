@@ -1,0 +1,53 @@
+# Swaylock configuration - Tokyo Night theme
+# To match your hyprland setup
+
+# Disable the default behavior
+ignore-empty-password
+show-failed-attempts
+
+# Appearance
+image=/home/probird5/dotfiles/backgrounds/3rf2e770qnee1.png
+scaling=fill
+
+# Colors - Tokyo Night
+color=1a1b26
+
+# Ring colors
+indicator-radius=120
+indicator-thickness=10
+
+# Ring default state
+ring-color=565f89
+
+# Ring when typing
+key-hl-color=7aa2f7
+
+# Ring when verifying
+ring-ver-color=bb9af7
+
+# Ring when wrong password
+ring-wrong-color=f7768e
+
+# Inside colors
+inside-color=1a1b2680
+inside-ver-color=1a1b2680
+inside-wrong-color=1a1b2680
+
+# Separator color
+separator-color=00000000
+
+# Text colors
+text-color=c0caf5
+text-ver-color=c0caf5
+text-wrong-color=f7768e
+
+# Layout colors
+layout-bg-color=1a1b26
+layout-text-color=c0caf5
+
+# Font
+font=JetBrains Mono
+font-size=16
+
+# Disable the unlock indicator idle timeout
+indicator-idle-visible

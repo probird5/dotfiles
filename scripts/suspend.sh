@@ -9,7 +9,7 @@ IDLE_TIME_SUSPEND=900     # Time in seconds before system suspends
 
 # Function to lock the screen
 lock_screen() {
-    hyprlock &
+    swaylock &
 }
 
 # Function to turn off the monitors

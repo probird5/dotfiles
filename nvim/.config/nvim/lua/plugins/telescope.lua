@@ -13,6 +13,10 @@ return {
 				layout_config = {
 					preview_width = 0.6, -- Adjust preview window width
 				},
+				-- Disable treesitter highlighting in previewer to avoid ft_to_lang error
+				preview = {
+					treesitter = false,
+				},
 			},
 			pickers = {
 				lsp_definitions = {
