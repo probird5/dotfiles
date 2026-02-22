@@ -3,9 +3,6 @@
 //  MOBILE SUIT GUNDAM - COCKPIT HUD WAYBAR
 //  Earth Federation Forces | Tactical Display System v1.20
 //  Unit: RX-78-2 | Pilot Interface Module
-//
-//  NOTE: This is the default config (Hyprland). For compositor-specific
-//  configs use launch-waybar.sh or waybar -c <config file>
 // ============================================================================
 {
     "layer": "top",
@@ -86,6 +83,8 @@
     },
 
     // ── CENTER MODULES ────────────────────────────────────────────────
+
+    // COMMS -- media playback from any MPRIS source
     "mpris": {
         "format": "COMMS {title}",
         "format-paused": "COMMS {title} [HOLD]",
@@ -115,6 +114,7 @@
         "tooltip": false
     },
 
+    // COMBAT MODE -- idle inhibitor prevents screen sleep
     "idle_inhibitor": {
         "format": "{icon}",
         "format-icons": {
@@ -136,6 +136,7 @@
         "tooltip": false
     },
 
+    // GAMEMODE -- lights up when feral gamemode is active
     "gamemode": {
         "format": "{glyph} COMBAT",
         "format-alt": "{glyph} {count}",
@@ -167,6 +168,7 @@
         "interval": 5
     },
 
+    // STORAGE -- root partition usage
     "disk": {
         "path": "/",
         "interval": 30,
@@ -209,6 +211,7 @@
         "tooltip-format": "Battery: {capacity}%\n{timeTo}\nPower draw: {power:.1f}W"
     },
 
+    // REACTOR -- power profile selector (click to cycle)
     "custom/reactor": {
         "exec": "~/.config/waybar/scripts/power-profile.sh",
         "return-type": "json",
