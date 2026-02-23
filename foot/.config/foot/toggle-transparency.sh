@@ -1,17 +1,13 @@
 #!/bin/sh
-# Toggle foot terminal transparency between opaque and transparent.
-# Foot reloads its config on SIGUSR1.
+# Toggle foot terminal transparency between [colors] (opaque) and [colors2] (transparent).
+# foot uses SIGUSR1 to switch to [colors] and SIGUSR2 to switch to [colors2].
 
-CONFIG="$HOME/.config/foot/foot.ini"
-OPAQUE="alpha=1.0"
-TRANSPARENT="alpha=0.85"
+STATE_FILE="/tmp/foot-transparency-state"
 
-current=$(grep "^alpha=" "$CONFIG")
-
-if [ "$current" = "$OPAQUE" ]; then
-    sed -i "s/^alpha=.*/$TRANSPARENT/" "$CONFIG"
+if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "transparent" ]; then
+    pkill -x -SIGUSR1 foot
+    echo "opaque" > "$STATE_FILE"
 else
-    sed -i "s/^alpha=.*/$OPAQUE/" "$CONFIG"
+    pkill -x -SIGUSR2 foot
+    echo "transparent" > "$STATE_FILE"
 fi
-
-pkill -SIGUSR1 foot

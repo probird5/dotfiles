@@ -258,7 +258,7 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     export LS_COLORS="$LS_COLORS:ow=30;44:" # fix ls color for folders with 777 permissions
 
-    alias ls='ls --color=auto'
+    alias ls='eza --color=auto --icons'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -282,9 +282,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
+alias ll='eza -l --icons --git --header --group-directories-first'
+alias la='eza -a --icons --group-directories-first'
+alias l='eza --icons --group-directories-first'
+alias lt='eza --tree --icons --git --level=3'
+alias lla='eza -la --icons --git --header --group-directories-first'
+
+# use bat instead of cat
+alias cat='bat'
 
 # enable auto-suggestions based on the history
 if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then

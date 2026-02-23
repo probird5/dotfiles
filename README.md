@@ -172,10 +172,41 @@ Environment variables `NIXOS_CONFIG` and `DOTFILES_DIR` can also be used.
 
 Plugin manager: [lazy.nvim](https://github.com/folke/lazy.nvim) | Theme: [Tokyo Night](https://github.com/folke/tokyonight.nvim) | Leader: `Space`
 
+### Directory Structure
+
+```
+nvim/.config/nvim/
+├── init.lua                  # Entry point — bootstraps lazy.nvim
+├── lazy-lock.json            # Plugin lockfile
+└── lua/
+    ├── vim-options.lua       # Editor settings & global keymaps
+    ├── lsp/
+    │   └── lsp.lua           # Enables LSP servers via vim.lsp.enable()
+    └── plugins/              # One file per plugin (auto-loaded by lazy.nvim)
+        ├── autopairs.lua
+        ├── completions.lua
+        ├── lsp-config.lua
+        ├── lualine.lua
+        ├── mason.lua
+        ├── neo-tree.lua
+        ├── neotree.lua
+        ├── none-ls.lua
+        ├── obsidian.lua
+        ├── oil.lua
+        ├── opencode.lua
+        ├── snacks.lua
+        ├── telescope.lua
+        ├── tmux-navigator.lua
+        ├── tokyonight.lua
+        └── treesitter.lua
+```
+
 ### Plugin Overview
 
 | Plugin | Purpose |
 |--------|---------|
+| [`opencode.nvim`](https://github.com/nickjvandyke/opencode.nvim) | AI assistant integration (opencode) |
+| [`snacks.nvim`](https://github.com/folke/snacks.nvim) | Dashboard, enhanced input/picker for opencode |
 | `nvim-lspconfig` | LSP client configuration |
 | `mason.nvim` | LSP/tool package manager |
 | `mason-lspconfig.nvim` | Bridge between Mason and lspconfig |
@@ -187,7 +218,6 @@ Plugin manager: [lazy.nvim](https://github.com/folke/lazy.nvim) | Theme: [Tokyo 
 | `neo-tree.nvim` | File tree sidebar |
 | `oil.nvim` | File browser (edit filesystem like a buffer) |
 | `none-ls.nvim` | Formatting and diagnostics integration |
-| `alpha-nvim` | Startup dashboard |
 | `lualine.nvim` | Status line (iceberg_dark theme) |
 | `nvim-autopairs` | Auto-close brackets and quotes |
 | `vim-tmux-navigator` | Seamless tmux/nvim pane navigation |
@@ -196,7 +226,7 @@ Plugin manager: [lazy.nvim](https://github.com/folke/lazy.nvim) | Theme: [Tokyo 
 
 ### LSP & Language Support
 
-All LSP servers and tools are **auto-installed via Mason** on first launch.
+All LSP servers and tools are **auto-installed via Mason** on first launch. LSP servers are enabled in `lua/lsp/lsp.lua`.
 
 | Language | LSP Server | Formatter | Linter |
 |----------|-----------|-----------|--------|
@@ -210,69 +240,94 @@ All LSP servers and tools are **auto-installed via Mason** on first launch.
 | HTML/CSS | `html` | `prettier` | html |
 | YAML | `yamlls` | `prettier` | yamlls |
 | JSON | - | `prettier` | - |
+| Nix | `nixd` | - | nixd |
 
 **Treesitter parsers** (auto-installed): `c`, `rust`, `lua`, `vim`, `vimdoc`, `python`, `go`, `gomod`, `gosum`, `bash`, `html`, `javascript`, `typescript`, `yaml`, `json`, `toml`, `markdown`, `markdown_inline`, `css`
 
 ### Neovim Keybindings
 
+> **Leader key:** `Space`
+>
+> **Note:** `+` and `-` replace the default `Ctrl+a` / `Ctrl+x` for increment/decrement since those keys are used by opencode.
+
 #### General
 
-| Key | Action |
-|-----|--------|
-| `Space` | Leader key |
-| `Ctrl+h/j/k/l` | Navigate between windows/tmux panes |
-| `Leader h` | Previous buffer |
-| `Leader l` | Next buffer |
+| Key | Mode | Action | Source |
+|-----|------|--------|--------|
+| `Space` | n | Leader key | vim-options |
+| `Ctrl+h/j/k/l` | n | Navigate between windows/tmux panes | vim-options / tmux-navigator |
+| `Leader h` | n | Previous buffer | vim-options |
+| `Leader l` | n | Next buffer | vim-options |
+| `+` | n | Increment number under cursor | opencode |
+| `-` | n | Decrement number under cursor | opencode |
+
+#### Opencode (AI Assistant)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `Ctrl+a` | n, x | Ask opencode about selection/cursor context |
+| `Ctrl+x` | n, x | Select opencode action (prompts, commands, etc.) |
+| `Ctrl+.` | n, t | Toggle opencode terminal |
+| `go{motion}` | n, x | Send range to opencode (supports dot-repeat) |
+| `goo` | n | Send current line to opencode |
+| `Shift+Ctrl+u` | n | Scroll opencode up |
+| `Shift+Ctrl+d` | n | Scroll opencode down |
+| `Alt+a` | n, i | Send picker selection to opencode (in snacks picker) |
 
 #### LSP
 
-| Key | Action |
-|-----|--------|
-| `K` | Hover documentation |
-| `Leader gd` | Go to definition |
-| `Leader gr` | Find references |
-| `Leader ca` | Code actions |
-| `Leader gf` | Format buffer |
+| Key | Mode | Action |
+|-----|------|--------|
+| `K` | n | Hover documentation |
+| `Leader gd` | n | Go to definition |
+| `Leader gr` | n | Find references |
+| `Leader ca` | n | Code actions |
+| `Leader gf` | n | Format buffer |
+| `gd` | n | LSP definitions via Telescope (with preview) |
 
 #### Telescope
 
-| Key | Action |
-|-----|--------|
-| `Leader ff` | Find files (includes hidden) |
-| `Leader fg` | Live grep |
-| `Leader fb` | List buffers |
-| `gd` | LSP definitions (with preview) |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Leader ff` | n | Find files (includes hidden) |
+| `Leader fg` | n | Live grep |
+| `Leader fb` | n | List buffers |
 
 #### File Navigation
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+n` | Toggle Neo-tree sidebar |
-| `Leader bf` | Toggle buffer list (floating) |
-| `-` | Open parent directory (oil.nvim) |
-| `Space -` | Open parent directory (floating) |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Ctrl+n` | n | Toggle Neo-tree sidebar |
+| `Leader bf` | n | Toggle buffer list (Neo-tree floating) |
+| `Backspace` | n | Open parent directory (oil.nvim) |
+| `Space -` | n | Open parent directory in floating window (oil.nvim) |
+| `Alt+h` | n | Open horizontal split (inside oil buffer) |
 
-#### Completion
+#### Completion (nvim-cmp)
 
-| Key | Action |
-|-----|--------|
-| `Tab` / `Shift+Tab` | Navigate completion items |
-| `Ctrl+Space` | Trigger completion |
-| `Enter` | Confirm selection |
-| `Ctrl+e` | Abort completion |
-| `Ctrl+b` / `Ctrl+f` | Scroll documentation |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Tab` | i | Next completion item |
+| `Shift+Tab` | i | Previous completion item |
+| `Ctrl+Space` | i | Trigger completion |
+| `Enter` | i | Confirm selection |
+| `Ctrl+e` | i | Abort completion |
+| `Ctrl+c` | i | Close completion menu |
+| `Ctrl+b` | i | Scroll docs up |
+| `Ctrl+f` | i | Scroll docs down |
 
-#### Obsidian
+#### Obsidian (markdown files only)
 
-| Key | Action |
-|-----|--------|
-| `Leader oc` | Toggle checkbox |
-| `Leader ot` | Insert template |
-| `Leader oo` | Open in Obsidian |
-| `Leader ob` | Show backlinks |
-| `Leader ol` | Show links |
-| `Leader on` | New note |
-| `Leader os` | Search notes |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Leader oc` | n | Toggle checkbox |
+| `Leader ot` | n | Insert template |
+| `Leader oo` | n | Open in Obsidian app |
+| `Leader ob` | n | Show backlinks |
+| `Leader ol` | n | Show links |
+| `Leader on` | n | Create new note |
+| `Leader os` | n | Search notes |
+| `Leader oq` | n | Quick switch between notes |
 
 ### Formatters & Linters
 
@@ -282,10 +337,11 @@ Format any buffer with `Leader gf`. Formatting is provided by none-ls.nvim, whic
 
 ### Dashboard
 
-The startup dashboard (alpha-nvim) shows:
-- Neovim logo
-- Quick-access buttons: find files, recent files, grep, restore session, Lazy, quit
+The startup dashboard ([snacks.nvim](https://github.com/folke/snacks.nvim)) shows:
+- NEOVIM ASCII logo
+- Quick-access keys: find files `f`, recent files `r`, grep `g`, restore session `s`, Lazy `l`, quit `q`
 - Time-based greeting (morning/afternoon/evening/night)
+- Startup time
 
 ---
 
