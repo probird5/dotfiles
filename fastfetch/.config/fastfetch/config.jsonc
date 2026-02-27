@@ -1,123 +1,60 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-  
-  // Logo configuration
+
   "logo": {
-    "type": "auto",
     "padding": {
       "top": 1,
-      "left": 2
+      "left": 2,
+      "right": 2
     }
   },
 
-  // Display settings
   "display": {
-    "separator": " -> ",
+    "separator": "  ",
     "color": {
-      "keys": "blue",
-      "title": "blue"
+      "keys": "34",
+      "title": "35"
+    },
+    "key": {
+      "width": 10
     }
   },
 
-  // Modules to display
   "modules": [
     {
       "type": "title",
-      "format": "{#bright_blue}{user-name-colored}{#reset}@{#bright_magenta}{host-name-colored}{#reset}"
+      "format": "{##7aa2f7}{user-name}{##414868}@{##bb9af7}{host-name}{#}"
     },
     {
       "type": "separator",
-      "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      "string": "──────────────────────────"
     },
-    {
-      "type": "os",
-      "key": " OS",
-      "keyColor": "blue"
-    },
-    {
-      "type": "kernel",
-      "key": " Kernel",
-      "keyColor": "blue"
-    },
-    {
-      "type": "packages",
-      "key": "󰏖 Packages",
-      "keyColor": "blue"
-    },
-    {
-      "type": "shell",
-      "key": " Shell",
-      "keyColor": "blue"
-    },
-    {
-      "type": "display",
-      "key": "󰍹 Display",
-      "keyColor": "blue"
-    },
-    {
-      "type": "wm",
-      "key": " WM",
-      "keyColor": "blue"
-    },
-    {
-      "type": "wmtheme",
-      "key": "󰉼 WM Theme",
-      "keyColor": "blue"
-    },
-    {
-      "type": "terminal",
-      "key": " Terminal",
-      "keyColor": "blue"
-    },
-    {
-      "type": "terminalfont",
-      "key": " Term Font",
-      "keyColor": "blue"
-    },
-    {
-      "type": "cpu",
-      "key": " CPU",
-      "keyColor": "green"
-    },
-    {
-      "type": "gpu",
-      "key": "󰢮 GPU",
-      "keyColor": "green"
-    },
-    {
-      "type": "memory",
-      "key": " Memory",
-      "keyColor": "yellow"
-    },
-    {
-      "type": "disk",
-      "key": "󰋊 Disk (/)",
-      "keyColor": "yellow"
-    },
-    {
-      "type": "battery",
-      "key": "󰁹 Battery",
-      "keyColor": "yellow"
-    },
-    {
-      "type": "uptime",
-      "key": "󰅐 Uptime",
-      "keyColor": "magenta"
-    },
+    { "type": "os",           "key": "OS",       "keyColor": "34" },
+    { "type": "kernel",       "key": "Kernel",   "keyColor": "34" },
+    { "type": "packages",     "key": "Packages", "keyColor": "34" },
+    { "type": "shell",        "key": "Shell",    "keyColor": "34" },
+    { "type": "break" },
+    { "type": "wm",           "key": "WM",       "keyColor": "35" },
+    { "type": "terminal",     "key": "Terminal", "keyColor": "35" },
+    { "type": "display",      "key": "Display",  "keyColor": "35" },
+    { "type": "break" },
+    { "type": "cpu",          "key": "CPU",      "keyColor": "32" },
+    { "type": "gpu",          "key": "GPU",      "keyColor": "32" },
+    { "type": "memory",       "key": "RAM",      "keyColor": "32" },
+    { "type": "disk",         "key": "Disk",     "keyColor": "32", "folders": "/" },
+    { "type": "battery",      "key": "Battery",  "keyColor": "32" },
+    { "type": "break" },
+    { "type": "uptime",       "key": "Uptime",   "keyColor": "33" },
     {
       "type": "command",
-      "key": "󰃭 OS Age",
-      "keyColor": "magenta",
-      "text": "birth=$(stat -c %W /); if [ $birth -eq 0 ]; then birth=$(stat -c %Y /); fi; current=$(date +%s); age=$((current - birth)); days=$((age / 86400)); years=$((days / 365)); remaining_days=$((days % 365)); months=$((remaining_days / 30)); remaining_days=$((remaining_days % 30)); if [ $years -gt 0 ]; then echo \"${years}y ${months}m ${remaining_days}d\"; elif [ $months -gt 0 ]; then echo \"${months}m ${remaining_days}d\"; else echo \"${days}d\"; fi"
+      "key": "OS Age",
+      "keyColor": "33",
+      "text": "birth=$(stat -c %W /); if [ \"$birth\" -eq 0 ] 2>/dev/null; then birth=$(stat -c %Y /); fi; current=$(date +%s); age=$((current - birth)); days=$((age / 86400)); years=$((days / 365)); remaining_days=$((days % 365)); months=$((remaining_days / 30)); remaining_days=$((remaining_days % 30)); if [ $years -gt 0 ]; then echo \"${years}y ${months}m ${remaining_days}d\"; elif [ $months -gt 0 ]; then echo \"${months}m ${remaining_days}d\"; else echo \"${days}d\"; fi"
     },
     {
       "type": "separator",
-      "string": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      "string": "──────────────────────────"
     },
-    {
-      "type": "colors",
-      "paddingLeft": 2,
-      "symbol": "circle"
-    }
+    { "type": "colors", "paddingLeft": 2, "symbol": "diamond" }
   ]
 }
