@@ -1,1 +1,1 @@
-grim -g "$(slurp -d)" - | swappy -f -
+grim -g "$(slurp -d)" - | satty -f -

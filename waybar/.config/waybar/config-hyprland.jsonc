@@ -64,11 +64,7 @@
         },
         "on-click": "activate",
         "all-outputs": false,
-        "show-special": false,
-        "persistent-workspaces": {
-            "DP-2": [1, 2, 3, 4, 5, 10],
-            "DP-3": [6, 7]
-        }
+        "show-special": false
     },
 
     "custom/separator-left": {
@@ -223,7 +219,7 @@
 
     "custom/power": {
         "format": "[END]",
-        "on-click": "syspower",
+        "on-click": "~/.config/waybar/scripts/power-menu.sh",
         "tooltip": false
     }
 }

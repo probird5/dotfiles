@@ -313,4 +313,5 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-. "$HOME/.local/bin/env"
+# Source bun/deno env if installed
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"

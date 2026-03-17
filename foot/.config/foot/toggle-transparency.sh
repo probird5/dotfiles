@@ -1,6 +1,6 @@
 #!/bin/sh
-# Toggle foot terminal transparency between [colors] (opaque) and [colors2] (transparent).
-# foot uses SIGUSR1 to switch to [colors] and SIGUSR2 to switch to [colors2].
+# Toggle foot terminal transparency between [colors-dark] (opaque) and [colors-light] (transparent).
+# foot uses SIGUSR1 to switch to [colors-dark] and SIGUSR2 to switch to [colors-light].
 
 STATE_FILE="/tmp/foot-transparency-state"
 
