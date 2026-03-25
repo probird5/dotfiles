@@ -6,7 +6,7 @@ choice=$(echo -e "$options" | rofi -dmenu -p "Power" -i)
 
 case "$choice" in
     Lock) hyprlock ;;
-    Suspend) systemctl suspend ;;
+    Suspend) hyprlock & sleep 0.5 && systemctl suspend ;;
     Logout) hyprctl dispatch exit ;;
     Reboot) systemctl reboot ;;
     Shutdown) systemctl poweroff ;;
