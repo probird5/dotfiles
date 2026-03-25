@@ -513,7 +513,7 @@ Cross-shell prompt with Nerd Font segments:
 
 | Script | Description |
 |--------|-------------|
-| `scripts/wallpaper.sh` | Random wallpaper rotation using swww (wipe transition) |
+| `scripts/wallpaper.sh` | Random wallpaper rotation using awww (wipe transition) |
 | `scripts/suspend.sh` | Suspend handling |
 | `scripts/dwm-status.sh` | DWM status bar updates |
 | `scripts/screen.sh` | Screen/display configuration |
