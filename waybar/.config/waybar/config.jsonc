@@ -19,7 +19,16 @@
 
     "modules-left": [
         "custom/unit-id",
-        "hyprland/workspaces",
+        "custom/ws1",
+        "custom/ws2",
+        "custom/ws3",
+        "custom/ws4",
+        "custom/ws5",
+        "custom/ws6",
+        "custom/ws7",
+        "custom/ws8",
+        "custom/ws9",
+        "custom/ws10",
         "custom/separator-left",
         "hyprland/window"
     ],
@@ -51,23 +60,74 @@
         "tooltip": false
     },
 
-    "hyprland/workspaces": {
-        "format": "{icon}",
-        "format-icons": {
-            "1": "I",
-            "2": "II",
-            "3": "III",
-            "4": "IV",
-            "5": "V",
-            "6": "VI",
-            "7": "VII",
-            "8": "VIII",
-            "9": "IX",
-            "10": "X"
-        },
-        "on-click": "activate",
-        "all-outputs": false,
-        "show-special": false
+    "custom/ws1": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 1 I",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 1 })'"
+    },
+
+    "custom/ws2": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 2 II",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 2 })'"
+    },
+
+    "custom/ws3": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 3 III",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 3 })'"
+    },
+
+    "custom/ws4": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 4 IV",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 4 })'"
+    },
+
+    "custom/ws5": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 5 V",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 5 })'"
+    },
+
+    "custom/ws6": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 6 VI",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 6 })'"
+    },
+
+    "custom/ws7": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 7 VII",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 7 })'"
+    },
+
+    "custom/ws8": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 8 VIII",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 8 })'"
+    },
+
+    "custom/ws9": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 9 IX",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 9 })'"
+    },
+
+    "custom/ws10": {
+        "exec": "~/.config/waybar/scripts/hypr-workspace.sh 10 X",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "hyprctl --instance 0 dispatch 'hl.dsp.focus({ workspace = 10 })'"
     },
 
     "custom/separator-left": {

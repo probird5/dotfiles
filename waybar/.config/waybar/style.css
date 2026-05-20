@@ -108,6 +108,98 @@ tooltip label {
     animation-direction: alternate;
 }
 
+#custom-ws1,
+#custom-ws2,
+#custom-ws3,
+#custom-ws4,
+#custom-ws5,
+#custom-ws6,
+#custom-ws7,
+#custom-ws8,
+#custom-ws9,
+#custom-ws10 {
+    padding: 0 7px;
+    background: transparent;
+    color: #485068;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    transition: all 150ms ease;
+}
+
+#custom-ws1:hover,
+#custom-ws2:hover,
+#custom-ws3:hover,
+#custom-ws4:hover,
+#custom-ws5:hover,
+#custom-ws6:hover,
+#custom-ws7:hover,
+#custom-ws8:hover,
+#custom-ws9:hover,
+#custom-ws10:hover {
+    color: #a8afc4;
+    background: rgba(43, 94, 167, 0.1);
+    border-bottom: 2px solid rgba(43, 94, 167, 0.4);
+}
+
+#custom-ws1.empty,
+#custom-ws2.empty,
+#custom-ws3.empty,
+#custom-ws4.empty,
+#custom-ws5.empty,
+#custom-ws6.empty,
+#custom-ws7.empty,
+#custom-ws8.empty,
+#custom-ws9.empty,
+#custom-ws10.empty {
+    font-size: 0;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+#custom-ws1.occupied,
+#custom-ws2.occupied,
+#custom-ws3.occupied,
+#custom-ws4.occupied,
+#custom-ws5.occupied,
+#custom-ws6.occupied,
+#custom-ws7.occupied,
+#custom-ws8.occupied,
+#custom-ws9.occupied,
+#custom-ws10.occupied,
+#custom-ws1.visible,
+#custom-ws2.visible,
+#custom-ws3.visible,
+#custom-ws4.visible,
+#custom-ws5.visible,
+#custom-ws6.visible,
+#custom-ws7.visible,
+#custom-ws8.visible,
+#custom-ws9.visible,
+#custom-ws10.visible {
+    color: #a8afc4;
+}
+
+#custom-ws1.active,
+#custom-ws2.active,
+#custom-ws3.active,
+#custom-ws4.active,
+#custom-ws5.active,
+#custom-ws6.active,
+#custom-ws7.active,
+#custom-ws8.active,
+#custom-ws9.active,
+#custom-ws10.active {
+    color: #e8b534;
+    border-bottom: 2px solid #e8b534;
+    background: rgba(232, 181, 52, 0.06);
+}
+
 /* ── DWL TAGS (MANGOWC) ─────────────────────────────────────────── */
 #tags button {
     padding: 0 7px;

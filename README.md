@@ -71,7 +71,7 @@ dotfiles/
 ├── hypr/            # Hyprland + hyprlock + hypridle + hyprpaper
 ├── i3/              # i3 window manager (X11)
 ├── librewolf/       # Librewolf browser (user.js)
-├── nvim/            # Neovim (lazy.nvim, LSP, treesitter)
+├── nvim/            # Neovim 0.12+ (vim.pack, native LSP/completion)
 ├── picom/           # Picom compositor (X11)
 ├── rofi/            # Rofi application launcher
 ├── scripts/         # Utility scripts (wallpaper, suspend, etc.)
@@ -170,35 +170,27 @@ Environment variables `NIXOS_CONFIG` and `DOTFILES_DIR` can also be used.
 
 ## Neovim
 
-Plugin manager: [lazy.nvim](https://github.com/folke/lazy.nvim) | Theme: [Tokyo Night](https://github.com/folke/tokyonight.nvim) | Leader: `Space`
+Plugin manager: built-in `vim.pack` | Theme: [Tokyo Night](https://github.com/folke/tokyonight.nvim) | Leader: `Space` | Target: Neovim `0.12+`
 
 ### Directory Structure
 
 ```
 nvim/.config/nvim/
-├── init.lua                  # Entry point — bootstraps lazy.nvim
-├── lazy-lock.json            # Plugin lockfile
+├── init.lua                  # Entry point
+├── nvim-pack-lock.json       # Native vim.pack lockfile
 └── lua/
-    ├── vim-options.lua       # Editor settings & global keymaps
+    ├── plugin-config.lua     # Plugin setup and keymaps
+    ├── plugins.lua           # Native vim.pack package list
+    ├── vim-options.lua       # Editor settings and global keymaps
     ├── lsp/
     │   └── lsp.lua           # Enables LSP servers via vim.lsp.enable()
-    └── plugins/              # One file per plugin (auto-loaded by lazy.nvim)
-        ├── autopairs.lua
-        ├── completions.lua
-        ├── lsp-config.lua
-        ├── lualine.lua
-        ├── mason.lua
-        ├── neo-tree.lua
-        ├── neotree.lua
-        ├── none-ls.lua
-        ├── obsidian.lua
-        ├── oil.lua
-        ├── opencode.lua
-        ├── snacks.lua
-        ├── telescope.lua
-        ├── tmux-navigator.lua
-        ├── tokyonight.lua
-        └── treesitter.lua
+    └── .luarc.json           # Lua language server workspace config
+```
+
+Install/update plugins from inside Neovim:
+
+```vim
+:lua vim.pack.update()
 ```
 
 ### Plugin Overview
@@ -206,14 +198,12 @@ nvim/.config/nvim/
 | Plugin | Purpose |
 |--------|---------|
 | [`opencode.nvim`](https://github.com/nickjvandyke/opencode.nvim) | AI assistant integration (opencode) |
-| [`snacks.nvim`](https://github.com/folke/snacks.nvim) | Dashboard, enhanced input/picker for opencode |
+| [`snacks.nvim`](https://github.com/folke/snacks.nvim) | Dashboard, enhanced input, and picker actions for opencode |
 | `nvim-lspconfig` | LSP client configuration |
 | `mason.nvim` | LSP/tool package manager |
 | `mason-lspconfig.nvim` | Bridge between Mason and lspconfig |
 | `mason-tool-installer.nvim` | Auto-install formatters and linters |
-| `nvim-cmp` | Completion engine |
-| `LuaSnip` | Snippet engine with VS Code snippet support |
-| `nvim-treesitter` | Syntax highlighting and indentation |
+| Native LSP completion | Built-in completion via `vim.lsp.completion` and `vim.snippet` support |
 | `telescope.nvim` | Fuzzy finder (files, grep, buffers, LSP) |
 | `neo-tree.nvim` | File tree sidebar |
 | `oil.nvim` | File browser (edit filesystem like a buffer) |
@@ -226,12 +216,12 @@ nvim/.config/nvim/
 
 ### LSP & Language Support
 
-All LSP servers and tools are **auto-installed via Mason** on first launch. LSP servers are enabled in `lua/lsp/lsp.lua`.
+All LSP servers and tools are **auto-installed via Mason** on first launch. LSP servers are enabled using Neovim's native `vim.lsp.enable()` API in `lua/lsp/lsp.lua`.
 
 | Language | LSP Server | Formatter | Linter |
 |----------|-----------|-----------|--------|
 | Rust | `rust_analyzer` | rustfmt (via rust-analyzer) | rust-analyzer |
-| Python | `pyright` | `black` | `ruff` |
+| Python | `pyright`, `ruff` | `black` | `ruff` |
 | Go | `gopls` | `gofumpt`, `goimports-reviser` | `golangci-lint` |
 | C/C++ | `clangd` | `clang-format` | clangd |
 | Lua | `lua_ls` | `stylua` | lua_ls |
@@ -240,9 +230,9 @@ All LSP servers and tools are **auto-installed via Mason** on first launch. LSP 
 | HTML/CSS | `html` | `prettier` | html |
 | YAML | `yamlls` | `prettier` | yamlls |
 | JSON | - | `prettier` | - |
-| Nix | `nixd` | - | nixd |
+| Nix | `nixd` | `nixfmt` | nixd |
 
-**Treesitter parsers** (auto-installed): `c`, `rust`, `lua`, `vim`, `vimdoc`, `python`, `go`, `gomod`, `gosum`, `bash`, `html`, `javascript`, `typescript`, `yaml`, `json`, `toml`, `markdown`, `markdown_inline`, `css`
+Treesitter is not configured as an external plugin. Syntax and indentation use Neovim defaults, filetype plugins, LSP semantic tokens, and native runtime support.
 
 ### Neovim Keybindings
 
@@ -303,18 +293,15 @@ All LSP servers and tools are **auto-installed via Mason** on first launch. LSP 
 | `Space -` | n | Open parent directory in floating window (oil.nvim) |
 | `Alt+h` | n | Open horizontal split (inside oil buffer) |
 
-#### Completion (nvim-cmp)
+#### Completion (Native LSP)
 
 | Key | Mode | Action |
 |-----|------|--------|
 | `Tab` | i | Next completion item |
 | `Shift+Tab` | i | Previous completion item |
 | `Ctrl+Space` | i | Trigger completion |
-| `Enter` | i | Confirm selection |
-| `Ctrl+e` | i | Abort completion |
-| `Ctrl+c` | i | Close completion menu |
-| `Ctrl+b` | i | Scroll docs up |
-| `Ctrl+f` | i | Scroll docs down |
+
+Completion is provided by Neovim's built-in LSP completion. Snippets use native `vim.snippet` support when the language server provides snippet edits.
 
 #### Obsidian (markdown files only)
 
@@ -333,13 +320,13 @@ All LSP servers and tools are **auto-installed via Mason** on first launch. LSP 
 
 Format any buffer with `Leader gf`. Formatting is provided by none-ls.nvim, which bridges external tools into Neovim's LSP interface.
 
-**Mason auto-installs these tools:** `stylua`, `clang-format`, `gofumpt`, `goimports-reviser`, `golangci-lint`, `prettier`, `black`, `ruff`, `shfmt`
+**Mason auto-installs these tools:** `stylua`, `clang-format`, `gofumpt`, `goimports-reviser`, `golangci-lint`, `prettier`, `black`, `ruff`, `nixfmt`, `shfmt`
 
 ### Dashboard
 
 The startup dashboard ([snacks.nvim](https://github.com/folke/snacks.nvim)) shows:
 - NEOVIM ASCII logo
-- Quick-access keys: find files `f`, recent files `r`, grep `g`, restore session `s`, Lazy `l`, quit `q`
+- Quick-access keys: find files `f`, recent files `r`, grep `g`, restore session `s`, update packages `u`, quit `q`
 - Time-based greeting (morning/afternoon/evening/night)
 - Startup time
 

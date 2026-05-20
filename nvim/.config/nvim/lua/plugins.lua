@@ -1,9 +1,20 @@
-return {
--- added the name for tokyo night
--- Fuzzy finder of choice
-
-
--- Tree sitter
-
-
-}
+vim.pack.add({
+  { src = "https://github.com/folke/tokyonight.nvim" },
+  { src = "https://github.com/folke/snacks.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+  { src = "https://github.com/nvim-telescope/telescope.nvim" },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/williamboman/mason.nvim" },
+  { src = "https://github.com/williamboman/mason-lspconfig.nvim" },
+  { src = "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim" },
+  { src = "https://github.com/nvimtools/none-ls.nvim" },
+  { src = "https://github.com/nvim-lualine/lualine.nvim" },
+  { src = "https://github.com/windwp/nvim-autopairs" },
+  { src = "https://github.com/stevearc/oil.nvim" },
+  { src = "https://github.com/MunifTanjim/nui.nvim" },
+  { src = "https://github.com/nvim-neo-tree/neo-tree.nvim" },
+  { src = "https://github.com/christoomey/vim-tmux-navigator" },
+  { src = "https://github.com/epwalsh/obsidian.nvim" },
+  { src = "https://github.com/nickjvandyke/opencode.nvim" },
+})

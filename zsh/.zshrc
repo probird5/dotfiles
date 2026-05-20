@@ -315,3 +315,6 @@ fi
 
 # Source bun/deno env if installed
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# opencode
+export PATH=/home/probird5/.opencode/bin:$PATH
