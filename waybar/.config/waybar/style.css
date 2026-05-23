@@ -376,6 +376,39 @@ tooltip label {
     color: #c5352a;
 }
 
+/* ── TAILSCALE RELAY ─────────────────────────────────────────────── */
+/* Exit node relay -- encrypted tunnel status indicator */
+#custom-tailscale {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0 8px;
+    letter-spacing: 0.5px;
+    transition: all 150ms ease;
+}
+
+/* RELAY ACTIVE -- traffic routed through exit node */
+#custom-tailscale.connected {
+    color: #56c8d8;
+    font-weight: 700;
+    border-bottom: 2px solid #56c8d8;
+    background: rgba(86, 200, 216, 0.06);
+}
+
+/* RELAY INACTIVE -- direct connection, no tunnel */
+#custom-tailscale.disconnected {
+    color: #485068;
+}
+
+/* ERROR -- tailscale unreachable or connection failed */
+#custom-tailscale.error {
+    color: #c5352a;
+    animation-name: alert-pulse;
+    animation-duration: 2s;
+    animation-timing-function: steps(8);
+    animation-iteration-count: 3;
+    animation-direction: alternate;
+}
+
 /* ── DISK ────────────────────────────────────────────────────────── */
 /* Onboard storage readout */
 #disk {

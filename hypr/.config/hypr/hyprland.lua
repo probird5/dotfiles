@@ -24,7 +24,7 @@ hl.env("QT_STYLE_OVERRIDE", "kvantum")
 ------------------
 
 hl.monitor({ output = "DP-1", mode = "3840x2160@120.0", position = "0x1200", scale = 1.25 })
-hl.monitor({ output = "DP-2", mode = "3840x2160@144.0", position = "3072x0", scale = 1.0, transform = 3 })
+hl.monitor({ output = "DP-2", mode = "1280x720@60.0", position = "3072x0", scale = 1.0, transform = 0 })
 hl.monitor({ output = "eDP-1", mode = "2880x1920@60", position = "0x0", scale = 1.5 })
 
 ---------------------
@@ -44,6 +44,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("gentoo-pipewire-launcher")
     hl.exec_cmd("~/.config/waybar/launch-waybar.sh")
     hl.exec_cmd("hypridle")
+    hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
 end)
@@ -113,7 +114,9 @@ hl.config({
 
     scrolling = {
         column_width = 1.0,
-        follow_focus = true,
+        follow_focus = false,
+        focus_fit_method = 0,
+        fullscreen_on_one_column = true,
     },
 
     misc = {
@@ -173,6 +176,7 @@ hl.bind(mainMod .. " + B", layout_msg_if("dwindle", "togglesplit"))
 hl.bind("Print", hl.dsp.exec_cmd([=[grim -g "$(slurp -d)" - | satty -f -]=]))
 
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
+hl.bind(mainMod .. " + ALT + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.config/hypr/scripts/wallpaper.sh"))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("~/.config/foot/toggle-transparency.sh"))
 
@@ -279,8 +283,8 @@ hl.workspace_rule({ workspace = "2", monitor = "DP-1", layout = "scrolling" })
 hl.workspace_rule({ workspace = "3", monitor = "DP-1" })
 hl.workspace_rule({ workspace = "4", monitor = "DP-1" })
 hl.workspace_rule({ workspace = "5", monitor = "DP-1" })
-hl.workspace_rule({ workspace = "10", monitor = "DP-1", no_border = true, no_rounding = true })
-hl.workspace_rule({ workspace = "6", monitor = "DP-2", default = true, layout = "dwindle" })
+hl.workspace_rule({ workspace = "6", monitor = "DP-2", layout = "dwindle" })
 hl.workspace_rule({ workspace = "7", monitor = "DP-2", layout = "dwindle" })
 hl.workspace_rule({ workspace = "8", monitor = "DP-2" })
 hl.workspace_rule({ workspace = "9", monitor = "DP-2" })
+hl.workspace_rule({ workspace = "10", monitor = "DP-2", default = true, no_border = true, no_rounding = true })

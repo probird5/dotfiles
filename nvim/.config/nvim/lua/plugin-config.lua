@@ -243,6 +243,7 @@ setup("obsidian", function()
         path = "~/Documents/Notes/notes-improved",
       },
     },
+    ui = { enable = false },
   })
 
   vim.keymap.set("n", "<leader>oc", "<cmd>lua require('obsidian').util.toggle_checkbox()<CR>", { desc = "Obsidian checkbox" })

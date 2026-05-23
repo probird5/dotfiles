@@ -42,6 +42,7 @@
         "gamemode",
         "pulseaudio",
         "network",
+        "custom/tailscale",
         "disk",
         "cpu",
         "memory",
@@ -222,6 +223,16 @@
         "tooltip-format-ethernet": "{ifname} | {ipaddr}/{cidr}\nDown: {bandwidthDownBits}\nUp: {bandwidthUpBits}",
         "tooltip-format-disconnected": "No connection",
         "interval": 5
+    },
+
+    // RELAY -- tailscale exit node selector (click to pick)
+    "custom/tailscale": {
+        "exec": "~/.config/waybar/scripts/tailscale-exit-node.sh",
+        "return-type": "json",
+        "interval": 10,
+        "on-click": "~/.config/waybar/scripts/tailscale-exit-node.sh --menu",
+        "signal": 9,
+        "format": "RLY {}"
     },
 
     // STORAGE -- root partition usage

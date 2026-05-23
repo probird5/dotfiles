@@ -1,0 +1,145 @@
+/*******************************************************************************
+ * GUNDAM HUD -- EXIT NODE SELECTOR
+ * Earth Federation Forces | Relay Selection Interface
+ *
+ * Color Reference (RX-78-2 Palette):
+ *   federation-blue : #2b5ea7
+ *   red-accent      : #c5352a
+ *   yellow-vfin     : #e8b534
+ *   armor-white     : #e8e3d8
+ *   hud-green       : #4ae08c
+ *   hud-cyan        : #56c8d8
+ *   hud-dim         : #485068
+ *   panel-bg        : #181b24
+ *   panel-border    : #2a2f3f
+ *   dark-frame      : #0d0f14
+ *******************************************************************************/
+
+* {
+    bg0:    #0d0f14EB;
+    bg1:    #181b24;
+    bg2:    #2a2f3f80;
+    bg3:    #2b5ea7F2;
+    fg0:    #e8e3d8;
+    fg1:    #a8afc4;
+    fg2:    #56c8d8;
+    fg3:    #485068;
+}
+
+* {
+    font:   "JetBrains Mono 12";
+
+    background-color:   transparent;
+    text-color:         @fg1;
+
+    margin:     0px;
+    padding:    0px;
+    spacing:    0px;
+}
+
+window {
+    location:           center;
+    width:              380;
+    border-radius:      2px;
+    border:             1px solid;
+    border-color:       #2a2f3f;
+
+    background-color:   @bg0;
+}
+
+mainbox {
+    padding:    8px;
+    border:     0 0 0 2px solid;
+    border-color: #2b5ea7;
+}
+
+inputbar {
+    background-color:   @bg1;
+    border-color:       @bg3;
+
+    border:         1px;
+    border-radius:  2px;
+
+    padding:    8px 12px;
+    spacing:    8px;
+    children:   [ prompt, entry ];
+}
+
+prompt {
+    text-color: #2b5ea7;
+    font:       "JetBrains Mono Bold 12";
+}
+
+entry {
+    placeholder:        "Select relay node...";
+    placeholder-color:  @fg3;
+    text-color:         @fg0;
+}
+
+message {
+    margin:             8px 0 0;
+    border-radius:      2px;
+    border-color:       @bg2;
+    background-color:   @bg2;
+}
+
+textbox {
+    padding:    8px 12px;
+}
+
+listview {
+    background-color:   transparent;
+
+    margin:     8px 0 0;
+    lines:      6;
+    columns:    1;
+
+    fixed-height: false;
+}
+
+element {
+    padding:        6px 12px;
+    spacing:        8px;
+    border-radius:  2px;
+    border:         0 0 0 2px solid;
+    border-color:   transparent;
+}
+
+element normal normal {
+    text-color: @fg1;
+}
+
+element normal active {
+    text-color: @fg2;
+    border-color: @fg2;
+}
+
+element alternate normal {
+    text-color: @fg1;
+}
+
+element alternate active {
+    text-color: @fg2;
+    border-color: @fg2;
+}
+
+element selected normal {
+    background-color:   rgba(43, 94, 167, 0.2);
+    text-color:         @fg0;
+    border-color:       #2b5ea7;
+}
+
+element selected active {
+    background-color:   rgba(86, 200, 216, 0.15);
+    text-color:         @fg2;
+    border-color:       @fg2;
+}
+
+element-icon {
+    size:           1em;
+    vertical-align: 0.5;
+}
+
+element-text {
+    text-color: inherit;
+}
