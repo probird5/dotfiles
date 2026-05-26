@@ -1,135 +1,43 @@
 // -*- mode: jsonc -*-
-// ============================================================================
-//  MOBILE SUIT GUNDAM - COCKPIT HUD WAYBAR
-//  Earth Federation Forces | Tactical Display System v1.20
-//  Unit: RX-78-2 | Pilot Interface Module
-//  Compositor: MangoWC (DWL protocol)
-// ============================================================================
+// Minimal DWM-style Waybar for MangoWC/DWL tags.
 {
     "layer": "top",
     "position": "top",
-    "height": 34,
+    "height": 26,
     "spacing": 0,
-    "margin-top": 4,
-    "margin-left": 8,
-    "margin-right": 8,
     "reload_style_on_change": true,
 
     "modules-left": [
-        "custom/unit-id",
-        "dwl/tags",
-        "custom/separator-left",
-        "dwl/window"
+        "dwl/tags"
     ],
     "modules-center": [
-        "mpris",
-        "custom/separator-center-l",
-        "clock",
-        "custom/separator-center-r",
-        "idle_inhibitor"
+        "dwl/window"
     ],
     "modules-right": [
-        "tray",
-        "custom/separator-right",
-        "gamemode",
         "pulseaudio",
         "network",
         "custom/tailscale",
-        "disk",
         "cpu",
         "memory",
         "backlight",
         "battery",
-        "custom/reactor",
-        "custom/power"
+        "custom/profile",
+        "custom/powermenu",
+        "clock"
     ],
 
-    // ── LEFT MODULES ──────────────────────────────────────────────────
-    "custom/unit-id": {
-        "format": "RX-78",
-        "tooltip": false
-    },
-
     "dwl/tags": {
-        "num-tags": 9
-    },
-
-    "custom/separator-left": {
-        "format": "|",
-        "tooltip": false
+        "num-tags": 10
     },
 
     "dwl/window": {
         "format": "{}",
-        "max-length": 40
-    },
-
-    // ── CENTER MODULES ────────────────────────────────────────────────
-    "mpris": {
-        "format": "COMMS {title}",
-        "format-paused": "COMMS {title} [HOLD]",
-        "format-stopped": "",
-        "max-length": 30,
-        "tooltip-format": "{artist} - {title}\n{album}\n{player}",
-        "on-click": "playerctl play-pause",
-        "on-click-right": "playerctl next",
-        "on-scroll-up": "playerctl volume 0.05+",
-        "on-scroll-down": "playerctl volume 0.05-"
-    },
-
-    "custom/separator-center-l": {
-        "format": "[",
-        "tooltip": false
-    },
-
-    "clock": {
-        "format": "{:%H:%M:%S}",
-        "format-alt": "{:%Y.%m.%d | %H:%M}",
-        "interval": 1,
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
-    },
-
-    "custom/separator-center-r": {
-        "format": "]",
-        "tooltip": false
-    },
-
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "LOCK",
-            "deactivated": "AUTO"
-        },
-        "tooltip-format-activated": "Combat mode: ENGAGED\nScreen sleep inhibited",
-        "tooltip-format-deactivated": "Combat mode: STANDBY\nScreen sleep allowed"
-    },
-
-    // ── RIGHT MODULES ─────────────────────────────────────────────────
-    "tray": {
-        "spacing": 8,
-        "icon-size": 14
-    },
-
-    "custom/separator-right": {
-        "format": "|",
-        "tooltip": false
-    },
-
-    "gamemode": {
-        "format": "{glyph} COMBAT",
-        "format-alt": "{glyph} {count}",
-        "glyph": ">>",
-        "hide-not-running": true,
-        "use-icon": false,
-        "tooltip-format": "Gamemode active\n{count} game(s) running"
+        "max-length": 70
     },
 
     "pulseaudio": {
         "format": "VOL {volume}%",
-        "format-muted": "VOL MUTE",
-        "format-icons": {
-            "default": [""]
-        },
+        "format-muted": "VOL --",
         "on-click": "pavucontrol",
         "on-scroll-up": "pamixer -i 2",
         "on-scroll-down": "pamixer -d 2",
@@ -138,45 +46,37 @@
 
     "network": {
         "format-wifi": "NET {signalStrength}%",
-        "format-ethernet": "NET UP",
-        "format-disconnected": "NET DOWN",
-        "tooltip-format-wifi": "{essid} | {ipaddr}\nSignal: {signalStrength}%\nFreq: {frequency}GHz\nDown: {bandwidthDownBits}\nUp: {bandwidthUpBits}",
+        "format-ethernet": "NET ETH",
+        "format-disconnected": "NET --",
+        "tooltip-format-wifi": "{essid} | {ipaddr}\nSignal: {signalStrength}%\nDown: {bandwidthDownBits}\nUp: {bandwidthUpBits}",
         "tooltip-format-ethernet": "{ifname} | {ipaddr}/{cidr}\nDown: {bandwidthDownBits}\nUp: {bandwidthUpBits}",
-        "tooltip-format-disconnected": "No connection",
+        "tooltip-format-disconnected": "No network connection",
         "interval": 5
     },
 
-    // RELAY -- tailscale exit node selector (click to pick)
     "custom/tailscale": {
         "exec": "~/.config/waybar/scripts/tailscale-exit-node.sh",
         "return-type": "json",
         "interval": 10,
         "on-click": "~/.config/waybar/scripts/tailscale-exit-node.sh --menu",
         "signal": 9,
-        "format": "RLY {}"
-    },
-
-    "disk": {
-        "path": "/",
-        "interval": 30,
-        "format": "DSK {used}/{total}",
-        "tooltip-format": "Root partition: {path}\n{used}/{total} ({percentage_used}%)\nFree: {free}"
+        "format": "TS {}"
     },
 
     "cpu": {
         "interval": 2,
-        "format": "CPU {usage:>2}%",
-        "tooltip-format": "CPU Load: {usage}%\n{avg_frequency}GHz"
+        "format": "CPU {usage}%",
+        "tooltip-format": "CPU: {usage}%\n{avg_frequency} GHz"
     },
 
     "memory": {
         "interval": 5,
-        "format": "MEM {used:0.0f}/{total:0.0f}G",
-        "tooltip-format": "RAM: {used:0.1f}/{total:0.1f} GiB ({percentage}%)\nSwap: {swapUsed:0.1f}/{swapTotal:0.1f} GiB"
+        "format": "MEM {percentage}%",
+        "tooltip-format": "RAM: {used:0.1f}/{total:0.1f} GiB\nSwap: {swapUsed:0.1f}/{swapTotal:0.1f} GiB"
     },
 
     "backlight": {
-        "format": "LUM {percent}%",
+        "format": "BRT {percent}%",
         "tooltip-format": "Brightness: {percent}%",
         "on-scroll-up": "brightnessctl s +2%",
         "on-scroll-down": "brightnessctl s 2%-"
@@ -189,27 +89,35 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "PWR {capacity}%",
-        "format-charging": "CHG {capacity}%",
+        "format": "BAT {capacity}%",
+        "format-discharging": "BAT {capacity}% {power:.1f}W",
+        "format-charging": "AC {capacity}% {power:.1f}W",
         "format-plugged": "AC {capacity}%",
-        "format-full": "PWR MAX",
-        "format-alt": "{time} remaining",
+        "format-full": "BAT FULL",
+        "format-alt": "BAT {time}",
         "interval": 10,
-        "tooltip-format": "Battery: {capacity}%\n{timeTo}\nPower draw: {power:.1f}W"
+        "tooltip-format": "Battery: {capacity}%\n{timeTo}\nPower: {power:.1f}W"
     },
 
-    "custom/reactor": {
+    "custom/profile": {
         "exec": "~/.config/waybar/scripts/power-profile.sh",
         "return-type": "json",
         "interval": 5,
         "on-click": "~/.config/waybar/scripts/power-profile.sh cycle",
         "exec-on-event": true,
-        "format": "RCT {}"
+        "format": "PROF {}"
     },
 
-    "custom/power": {
-        "format": "[END]",
-        "on-click": "syspower",
-        "tooltip": false
+    "custom/powermenu": {
+        "format": "PWR",
+        "on-click": "~/.config/waybar/scripts/power-menu.sh",
+        "tooltip-format": "Power menu"
+    },
+
+    "clock": {
+        "format": "{:%a %b %d %H:%M}",
+        "format-alt": "{:%Y-%m-%d %H:%M:%S}",
+        "interval": 30,
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     }
 }

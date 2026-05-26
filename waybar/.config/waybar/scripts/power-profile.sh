@@ -1,7 +1,7 @@
 #!/bin/sh
 # ============================================================================
-#  GUNDAM HUD -- Reactor Output Mode (Power Profile)
-#  Cycles: CRUISE (power-saver) -> NORMAL (balanced) -> BOOST (performance)
+#  Minimal power profile status for Waybar.
+#  Cycles: SAVE (power-saver) -> BAL (balanced) -> PERF (performance)
 #
 #  Refresh rate logic:
 #    - On AC power       : respect profile (BOOST=120Hz, others=60Hz)
@@ -45,7 +45,7 @@ apply_refresh() {
 
     # On battery -- check charge level
     if [ "$capacity" -le "$LOW_THRESHOLD" ]; then
-        # Low E-CAP: force 60Hz, auto-downgrade to CRUISE if not already
+        # Low battery: force 60Hz and auto-downgrade to power saver.
         set_refresh 60
         if [ "$profile" != "power-saver" ]; then
             powerprofilesctl set power-saver
@@ -85,7 +85,7 @@ case "$1" in
         if [ "$status" = "Charging" ] || [ "$status" = "Full" ] || [ "$status" = "Not charging" ]; then
             bat_info="AC power (${capacity}%)"
         elif [ "$capacity" -le "$LOW_THRESHOLD" ]; then
-            bat_info="LOW E-CAP (${capacity}%) -- forced 60Hz"
+            bat_info="Low battery (${capacity}%) -- forced 60Hz"
         else
             bat_info="Battery ${capacity}%"
         fi
@@ -93,11 +93,11 @@ case "$1" in
         case "$current" in
             power-saver)
                 hz="60Hz"
-                echo "{\"text\": \"CRUISE\", \"alt\": \"power-saver\", \"class\": \"power-saver\", \"tooltip\": \"Reactor: CRUISE MODE\\nMinimum output -- conserving E-CAP\\nDisplay: ${hz}\\n${bat_info}\"}"
+                echo "{\"text\": \"SAVE\", \"alt\": \"power-saver\", \"class\": \"power-saver\", \"tooltip\": \"Power profile: SAVE\\nPower saver mode\\nDisplay: ${hz}\\n${bat_info}\"}"
                 ;;
             balanced)
                 hz="60Hz"
-                echo "{\"text\": \"NORMAL\", \"alt\": \"balanced\", \"class\": \"balanced\", \"tooltip\": \"Reactor: NORMAL OUTPUT\\nStandard combat readiness\\nDisplay: ${hz}\\n${bat_info}\"}"
+                echo "{\"text\": \"BAL\", \"alt\": \"balanced\", \"class\": \"balanced\", \"tooltip\": \"Power profile: BAL\\nBalanced mode\\nDisplay: ${hz}\\n${bat_info}\"}"
                 ;;
             performance)
                 if [ "$status" != "Charging" ] && [ "$status" != "Full" ] && [ "$status" != "Not charging" ] && [ "$capacity" -le "$LOW_THRESHOLD" ]; then
@@ -105,7 +105,7 @@ case "$1" in
                 else
                     hz="120Hz"
                 fi
-                echo "{\"text\": \"BOOST\", \"alt\": \"performance\", \"class\": \"performance\", \"tooltip\": \"Reactor: MAXIMUM OUTPUT\\nFull reactor burn -- high drain\\nDisplay: ${hz}\\n${bat_info}\"}"
+                echo "{\"text\": \"PERF\", \"alt\": \"performance\", \"class\": \"performance\", \"tooltip\": \"Power profile: PERF\\nPerformance mode\\nDisplay: ${hz}\\n${bat_info}\"}"
                 ;;
         esac
         ;;

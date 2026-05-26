@@ -1,8 +1,7 @@
 #!/bin/sh
 # ============================================================================
-#  GUNDAM HUD -- Tailscale Exit Node Relay
-#  Displays current exit node status and provides a rofi menu to select
-#  or disconnect exit nodes.
+#  Tailscale exit node status for Waybar.
+#  Displays the active exit node and provides a rofi menu to select or disconnect.
 #
 #  Usage:
 #    (no args)   -- Output JSON for waybar polling
@@ -119,7 +118,7 @@ run_menu() {
     node_data=$(get_exit_node_data)
 
     if [ -z "$node_data" ]; then
-        notify "normal" "RLY // EXIT NODE" "No exit nodes available on tailnet"
+        notify "normal" "Tailscale Exit Node" "No exit nodes available on tailnet"
         exit 0
     fi
 
@@ -152,34 +151,34 @@ run_menu() {
     chosen=$(echo "$chosen" | sed 's/^>> //; s/^   //; s/ \[ACTIVE\]$//')
 
     if [ "$chosen" = "DISCONNECT" ]; then
-        notify "low" "RLY // EXIT NODE" "Disengaging relay from $current..."
+        notify "low" "Tailscale Exit Node" "Disconnecting from $current..."
 
         err=$(tailscale set --exit-node= 2>&1)
         if [ $? -eq 0 ] && verify_disconnection; then
-            notify "normal" "RLY // EXIT NODE" "Relay disengaged\nDirect connection restored"
+            notify "normal" "Tailscale Exit Node" "Exit node disconnected\nDirect connection restored"
         else
-            notify "critical" "RLY // EXIT NODE" "Failed to disconnect\n${err:-Unknown error}"
+            notify "critical" "Tailscale Exit Node" "Failed to disconnect\n${err:-Unknown error}"
         fi
 
     elif [ "$chosen" = "$current" ]; then
-        notify "low" "RLY // EXIT NODE" "Already relaying through $chosen"
+        notify "low" "Tailscale Exit Node" "Already using $chosen"
         exit 0
 
     else
         # Resolve name to IP for the tailscale set command
         target_ip=$(resolve_exit_node_ip "$chosen")
         if [ -z "$target_ip" ]; then
-            notify "critical" "RLY // EXIT NODE" "Cannot resolve IP for $chosen"
+            notify "critical" "Tailscale Exit Node" "Cannot resolve IP for $chosen"
             exit 1
         fi
 
-        notify "low" "RLY // EXIT NODE" "Locking relay to $chosen..."
+        notify "low" "Tailscale Exit Node" "Switching to $chosen..."
 
         err=$(tailscale set --exit-node="$target_ip" 2>&1)
         if [ $? -eq 0 ] && verify_connection "$chosen"; then
-            notify "normal" "RLY // EXIT NODE" "Relay locked\nRouting through $chosen"
+            notify "normal" "Tailscale Exit Node" "Routing through $chosen"
         else
-            notify "critical" "RLY // EXIT NODE" "Connection failed\n${err:-Node unreachable}"
+            notify "critical" "Tailscale Exit Node" "Connection failed\n${err:-Node unreachable}"
         fi
     fi
 
@@ -191,17 +190,17 @@ run_menu() {
 
 run_poll() {
     if ! tailscale status --json >/dev/null 2>&1; then
-        printf '{"text": "ERR", "alt": "error", "class": "error", "tooltip": "Relay: ERROR\\nTailscale daemon unreachable"}\n'
+        printf '{"text": "ERR", "alt": "error", "class": "error", "tooltip": "Tailscale: ERROR\\nDaemon unreachable"}\n'
         return
     fi
 
     current=$(get_current_exit_node)
 
     if [ -n "$current" ]; then
-        printf '{"text": "%s", "alt": "connected", "class": "connected", "tooltip": "Relay: ACTIVE\\nExit node: %s\\nTraffic routed through remote node"}\n' \
+        printf '{"text": "%s", "alt": "connected", "class": "connected", "tooltip": "Tailscale: ACTIVE\\nExit node: %s"}\n' \
             "$current" "$current"
     else
-        printf '{"text": "OFF", "alt": "disconnected", "class": "disconnected", "tooltip": "Relay: INACTIVE\\nDirect connection -- no exit node"}\n'
+        printf '{"text": "OFF", "alt": "disconnected", "class": "disconnected", "tooltip": "Tailscale: OFF\\nNo exit node"}\n'
     fi
 }
 

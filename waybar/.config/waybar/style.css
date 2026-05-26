@@ -1,111 +1,49 @@
-/* ============================================================================
- *  MOBILE SUIT GUNDAM - COCKPIT HUD STYLESHEET
- *  Earth Federation Forces | Visual Display System v1.20
- * 
- *  Color Reference (RX-78-2 Palette):
- *    --gundam-white   : #e8e3d8  (armor panels)
- *    --gundam-blue    : #2b5ea7  (torso/federation blue)
- *    --gundam-red     : #c5352a  (chin/shield accent)
- *    --gundam-yellow  : #e8b534  (V-fin/vents)
- *    --gundam-dark    : #0d0f14  (inner frame/space)
- *    --hud-green      : #4ae08c  (tactical readout)
- *    --hud-cyan       : #56c8d8  (sensor data)
- *    --hud-dim        : #485068  (inactive/background data)
- *    --panel-bg       : #181b24  (cockpit panel surface)
- *    --panel-border   : #2a2f3f  (panel line)
- * ============================================================================ */
+@define-color bg #0b0d10;
+@define-color bg_alt #11141a;
+@define-color fg #c0caf5;
+@define-color muted #565f89;
+@define-color line #24283b;
+@define-color accent #7aa2f7;
+@define-color cyan #7dcfff;
+@define-color green #9ece6a;
+@define-color yellow #e0af68;
+@define-color red #f7768e;
 
-/* ── GLOBAL RESET ────────────────────────────────────────────────── */
 * {
     border: none;
     border-radius: 0;
     font-family: "JetBrains Mono", "IBM Plex Mono", "Fira Code", "Symbols Nerd Font", monospace;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     min-height: 0;
     padding: 0;
     margin: 0;
 }
 
-/* ── MAIN BAR ────────────────────────────────────────────────────── */
 window#waybar {
-    background: rgba(13, 15, 20, 0.92);
-    border: 1px solid #2a2f3f;
-    border-radius: 2px;
-    color: #a8afc4;
+    background: @bg;
+    border-bottom: 1px solid @line;
+    color: @fg;
 }
 
-window#waybar.top {
-    border-bottom: 2px solid #2b5ea7;
-}
-
-/* ── TOOLTIP ─────────────────────────────────────────────────────── */
 tooltip {
-    background: rgba(13, 15, 20, 0.95);
-    border: 1px solid #2b5ea7;
-    border-radius: 2px;
-    padding: 6px 10px;
+    background: @bg;
+    border: 1px solid @line;
 }
 
 tooltip label {
-    color: #e8e3d8;
-    font-size: 11px;
+    color: @fg;
 }
 
-/* ── MODULE GROUPS ───────────────────────────────────────────────── */
-.modules-left {
-    padding-left: 4px;
-}
-
+.modules-left,
+.modules-center,
 .modules-right {
-    padding-right: 2px;
-}
-
-/* ── UNIT DESIGNATOR (RX-78) ─────────────────────────────────────── */
-#custom-unit-id {
-    color: #2b5ea7;
-    font-weight: 700;
-    font-size: 13px;
-    padding: 0 12px 0 6px;
-    letter-spacing: 2px;
-    border-right: 1px solid #2a2f3f;
-    margin-right: 2px;
-}
-
-/* ── WORKSPACES (HYPRLAND) ───────────────────────────────────────── */
-#workspaces button {
-    padding: 0 7px;
     background: transparent;
-    color: #485068;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    transition: all 150ms ease;
 }
 
-#workspaces button:hover {
-    color: #a8afc4;
-    background: rgba(43, 94, 167, 0.1);
-    border-bottom: 2px solid rgba(43, 94, 167, 0.4);
-}
-
-#workspaces button.active {
-    color: #e8b534;
-    border-bottom: 2px solid #e8b534;
-    background: rgba(232, 181, 52, 0.06);
-}
-
-#workspaces button.urgent {
-    color: #c5352a;
-    border-bottom: 2px solid #c5352a;
-    background: rgba(197, 53, 42, 0.08);
-    animation-name: alert-pulse;
-    animation-duration: 1.5s;
-    animation-timing-function: steps(8);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+#workspaces,
+#tags {
+    padding-left: 4px;
 }
 
 #custom-ws1,
@@ -117,16 +55,13 @@ tooltip label {
 #custom-ws7,
 #custom-ws8,
 #custom-ws9,
-#custom-ws10 {
-    padding: 0 7px;
+#custom-ws10,
+#workspaces button,
+#tags button {
     background: transparent;
-    color: #485068;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    transition: all 150ms ease;
+    color: @muted;
+    padding: 0 8px;
+    transition: none;
 }
 
 #custom-ws1:hover,
@@ -138,10 +73,17 @@ tooltip label {
 #custom-ws7:hover,
 #custom-ws8:hover,
 #custom-ws9:hover,
-#custom-ws10:hover {
-    color: #a8afc4;
-    background: rgba(43, 94, 167, 0.1);
-    border-bottom: 2px solid rgba(43, 94, 167, 0.4);
+#custom-ws10:hover,
+#workspaces button:hover,
+#tags button:hover {
+    background: @bg_alt;
+    color: @fg;
+    box-shadow: inherit;
+    text-shadow: inherit;
+}
+
+#workspaces button.empty {
+    color: #414868;
 }
 
 #custom-ws1.empty,
@@ -159,7 +101,12 @@ tooltip label {
     min-height: 0;
     margin: 0;
     padding: 0;
-    border: none;
+}
+
+#tags button:not(.occupied):not(.focused) {
+    font-size: 0;
+    min-width: 0;
+    padding: 0;
 }
 
 #custom-ws1.occupied,
@@ -181,8 +128,10 @@ tooltip label {
 #custom-ws7.visible,
 #custom-ws8.visible,
 #custom-ws9.visible,
-#custom-ws10.visible {
-    color: #a8afc4;
+#custom-ws10.visible,
+#workspaces button.visible:not(.active),
+#tags button.occupied:not(.focused) {
+    color: @fg;
 }
 
 #custom-ws1.active,
@@ -194,321 +143,96 @@ tooltip label {
 #custom-ws7.active,
 #custom-ws8.active,
 #custom-ws9.active,
-#custom-ws10.active {
-    color: #e8b534;
-    border-bottom: 2px solid #e8b534;
-    background: rgba(232, 181, 52, 0.06);
-}
-
-/* ── DWL TAGS (MANGOWC) ─────────────────────────────────────────── */
-#tags button {
-    padding: 0 7px;
-    background: transparent;
-    color: #485068;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 1px;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    transition: all 150ms ease;
-}
-
-#tags button:not(.occupied):not(.focused) {
-    font-size: 0;
-    min-width: 0;
-    min-height: 0;
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-
-#tags button.occupied {
-    color: #a8afc4;
-}
-
+#custom-ws10.active,
+#workspaces button.active,
 #tags button.focused {
-    color: #e8b534;
-    border-bottom: 2px solid #e8b534;
-    background: rgba(232, 181, 52, 0.06);
+    background: @accent;
+    color: @bg;
 }
 
+#workspaces button.urgent,
 #tags button.urgent {
-    color: #c5352a;
-    border-bottom: 2px solid #c5352a;
-    animation-name: alert-pulse;
-    animation-duration: 1.5s;
-    animation-timing-function: steps(8);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    background: @red;
+    color: @bg;
 }
 
-/* ── SEPARATORS ──────────────────────────────────────────────────── */
-#custom-separator-left,
-#custom-separator-right {
-    color: #2a2f3f;
-    padding: 0 8px;
-    font-size: 14px;
-}
-
-#custom-separator-center-l,
-#custom-separator-center-r {
-    color: #2b5ea7;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 0 2px;
-}
-
-/* ── WINDOW TITLE ────────────────────────────────────────────────── */
-#window {
-    color: #6b7394;
-    font-size: 11px;
-    font-weight: 400;
-    padding: 0 12px;
-    font-style: italic;
-}
-
-/* ── MPRIS MEDIA (COMMS CHANNEL) ─────────────────────────────────── */
-/* Incoming transmission -- media info styled like a radio readout */
-#mpris {
-    color: #e8b534;
-    font-size: 11px;
+#window,
+#dwl-window {
+    color: @muted;
     font-weight: 500;
-    padding: 0 12px;
-    letter-spacing: 0.5px;
-}
-
-#mpris.paused {
-    color: #485068;
-}
-
-#mpris.stopped {
-    color: #485068;
-}
-
-/* ── CLOCK (CENTER) ──────────────────────────────────────────────── */
-#clock {
-    color: #e8e3d8;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 2px;
-    padding: 0 8px;
-}
-
-/* ── IDLE INHIBITOR (COMBAT MODE) ────────────────────────────────── */
-/* Toggle between combat readiness and standby */
-#idle_inhibitor {
-    font-size: 11px;
-    font-weight: 600;
     padding: 0 10px;
-    letter-spacing: 1px;
-    transition: all 150ms ease;
 }
 
-#idle_inhibitor.activated {
-    color: #c5352a;
-    border-bottom: 2px solid #c5352a;
-}
-
-#idle_inhibitor.deactivated {
-    color: #485068;
-}
-
-/* ── TRAY ────────────────────────────────────────────────────────── */
-#tray {
-    padding: 0 6px;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-}
-
-/* ── SYSTEM READOUTS (RIGHT MODULES) ─────────────────────────────── */
 #pulseaudio,
 #network,
+#custom-tailscale,
 #cpu,
 #memory,
-#disk,
 #backlight,
 #battery,
-#custom-reactor {
+#custom-profile,
+#custom-powermenu,
+#clock {
+    border-left: 1px solid @line;
     padding: 0 8px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
 }
 
-/* ── GAMEMODE (COMBAT STATUS) ────────────────────────────────────── */
-/* Lights up when gamemode is active -- you're in the fight */
-#gamemode {
-    color: #c5352a;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 0 10px;
-    letter-spacing: 1px;
-    border-bottom: 2px solid #c5352a;
-    background: rgba(197, 53, 42, 0.06);
-    animation-name: alert-pulse;
-    animation-duration: 2s;
-    animation-timing-function: steps(12);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-
-/* ── PULSEAUDIO ──────────────────────────────────────────────────── */
 #pulseaudio {
-    color: #56c8d8;
+    color: @cyan;
 }
 
-#pulseaudio.muted {
-    color: #485068;
-}
-
-/* ── NETWORK ─────────────────────────────────────────────────────── */
-#network {
-    color: #4ae08c;
-}
-
-#network.disconnected {
-    color: #c5352a;
-}
-
-/* ── TAILSCALE RELAY ─────────────────────────────────────────────── */
-/* Exit node relay -- encrypted tunnel status indicator */
-#custom-tailscale {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 0 8px;
-    letter-spacing: 0.5px;
-    transition: all 150ms ease;
-}
-
-/* RELAY ACTIVE -- traffic routed through exit node */
-#custom-tailscale.connected {
-    color: #56c8d8;
-    font-weight: 700;
-    border-bottom: 2px solid #56c8d8;
-    background: rgba(86, 200, 216, 0.06);
-}
-
-/* RELAY INACTIVE -- direct connection, no tunnel */
+#pulseaudio.muted,
+#network.disconnected,
 #custom-tailscale.disconnected {
-    color: #485068;
+    color: @muted;
 }
 
-/* ERROR -- tailscale unreachable or connection failed */
-#custom-tailscale.error {
-    color: #c5352a;
-    animation-name: alert-pulse;
-    animation-duration: 2s;
-    animation-timing-function: steps(8);
-    animation-iteration-count: 3;
-    animation-direction: alternate;
+#network,
+#custom-tailscale.connected {
+    color: @green;
 }
 
-/* ── DISK ────────────────────────────────────────────────────────── */
-/* Onboard storage readout */
-#disk {
-    color: #6b7394;
+#custom-tailscale.error,
+#battery.critical:not(.charging),
+#custom-powermenu {
+    color: @red;
 }
 
-/* ── CPU ─────────────────────────────────────────────────────────── */
-#cpu {
-    color: #56c8d8;
-}
-
-/* ── MEMORY ──────────────────────────────────────────────────────── */
+#cpu,
 #memory {
-    color: #9d8ec7;
+    color: @fg;
 }
 
-/* ── BACKLIGHT ───────────────────────────────────────────────────── */
-#backlight {
-    color: #e8b534;
-}
-
-/* ── BATTERY ─────────────────────────────────────────────────────── */
-#battery {
-    color: #4ae08c;
-}
-
-#battery.charging {
-    color: #e8b534;
-}
-
-#battery.plugged {
-    color: #56c8d8;
-}
-
-#battery.full {
-    color: #4ae08c;
-    font-weight: 700;
-}
-
+#backlight,
 #battery.warning:not(.charging) {
-    color: #e8b534;
+    color: @yellow;
 }
 
-#battery.critical:not(.charging) {
-    color: #c5352a;
+#battery,
+#battery.full,
+#battery.charging,
+#battery.plugged {
+    color: @green;
+}
+
+#custom-profile.power-saver {
+    color: @green;
+}
+
+#custom-profile.balanced {
+    color: @fg;
+}
+
+#custom-profile.performance {
+    color: @red;
+}
+
+#clock {
+    color: @fg;
     font-weight: 700;
-    animation-name: alert-pulse;
-    animation-duration: 1.5s;
-    animation-timing-function: steps(8);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
 }
 
-/* ── REACTOR (POWER PROFILE) ──────────────────────────────────────── */
-/* Minovsky reactor output mode -- click to cycle */
-#custom-reactor {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 0 8px;
-    letter-spacing: 0.5px;
-    transition: all 150ms ease;
-}
-
-/* CRUISE -- power-saver: dim green, low reactor output */
-#custom-reactor.power-saver {
-    color: #485068;
-}
-
-/* NORMAL -- balanced: standard operational readout */
-#custom-reactor.balanced {
-    color: #4ae08c;
-}
-
-/* BOOST -- performance: full burn, reactor warning red */
-#custom-reactor.performance {
-    color: #c5352a;
-    font-weight: 700;
-    border-bottom: 2px solid #c5352a;
-    background: rgba(197, 53, 42, 0.06);
-}
-
-/* ── POWER BUTTON ────────────────────────────────────────────────── */
-#custom-power {
-    color: #c5352a;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 0 8px 0 6px;
-    letter-spacing: 1px;
-    margin-left: 2px;
-    border-left: 1px solid #2a2f3f;
-    transition: all 150ms ease;
-}
-
-#custom-power:hover {
-    color: #ff4040;
-    background: rgba(197, 53, 42, 0.12);
-}
-
-/* ── ANIMATIONS ──────────────────────────────────────────────────── */
-@keyframes alert-pulse {
-    from { opacity: 1; }
-    to { opacity: 0.4; }
+#custom-powermenu:hover {
+    background: @red;
+    color: @bg;
 }
